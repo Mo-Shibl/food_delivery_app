@@ -26,62 +26,58 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 322,
-      height: errorText == null ? 45 : 70,
-      child: TextField(
-        controller: controller,
-        obscureText: obscureText,
-        keyboardType: keyboardType,
-        onChanged: onChanged,
-        style: AppTextStyles.paragraph.copyWith(
+    return TextField(
+      controller: controller,
+      obscureText: obscureText,
+      keyboardType: keyboardType,
+      onChanged: onChanged,
+      style: AppTextStyles.paragraph.copyWith(
+        color: AppColors.font,
+      ),
+      decoration: InputDecoration(
+        hintText: hintText,
+        hintStyle: AppTextStyles.paragraph.copyWith(
           color: AppColors.font,
         ),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: AppTextStyles.paragraph.copyWith(
-            color: AppColors.font,
-          ),
-          filled: true,
-          fillColor: AppColors.yellow2,
+        filled: true,
+        fillColor: AppColors.yellow2,
 
-          prefixIcon: prefixIcon,
-          suffixIcon: suffixIcon,
+        prefixIcon: prefixIcon,
+        suffixIcon: suffixIcon,
 
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
 
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(13),
-            borderSide: BorderSide.none,
-          ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(13),
+          borderSide: BorderSide.none,
+        ),
 
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(13),
-            borderSide: BorderSide.none,
-          ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(13),
+          borderSide: BorderSide.none,
+        ),
 
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(13),
-            borderSide: BorderSide(
-              color: AppColors.orangeBase,
-              width: 1.5,
-            ),
-          ),
-
-          errorText: errorText,
-          errorStyle: AppTextStyles.paragraph.copyWith(
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(13),
+          borderSide: BorderSide(
             color: AppColors.orangeBase,
-            fontSize: 12,
+            width: 1.5,
           ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(13),
-            borderSide: BorderSide(
-              color: AppColors.orangeBase,
-              width: 1.5,
-            ),
+        ),
+
+        errorText: errorText,
+        errorStyle: AppTextStyles.paragraph.copyWith(
+          color: AppColors.orangeBase,
+          fontSize: 12,
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(13),
+          borderSide: BorderSide(
+            color: AppColors.orangeBase,
+            width: 1.5,
           ),
         ),
       ),
