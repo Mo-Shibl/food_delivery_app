@@ -28,34 +28,32 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  cached_network_image: null
+  cupertino_icons: ^1.0.8
+  dio: null
+  equatable: null
   flutter:
     sdk: flutter
-
-  cupertino_icons: ^1.0.8
-
-  flutter_bloc:
-  get_it:
-  freezed:
-  freezed_annotation:
-  json_annotation:
-  dio:
-  pretty_dio_logger:
-  shared_preferences:
-  cached_network_image:
-  equatable:
-
+  flutter_bloc: null
+  freezed: null
+  freezed_annotation: null
+  get_it: null
+  json_annotation: null
+  pretty_dio_logger: null
+  shared_preferences: null
+  skeletonizer: ^2.1.3
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
+  build_runner:
 
   flutter_lints:
-  build_runner:
+  flutter_test:
+    sdk: flutter
   json_serializable:
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
+    # For information on the generic Dart part of this file, see the
+    # following page: https://dart.dev/tools/pub/pubspec
 
-# The following section is specific to Flutter packages.
+    # The following section is specific to Flutter packages.
 flutter:
 
   # The following line ensures that the Material Icons font is
@@ -79,7 +77,15 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
+  fonts:
+    - family: League Spartan
+      fonts:
+        - asset: assets/fonts/LeagueSpartan-Light.ttf
+          weight: 300
+        - asset: assets/fonts/LeagueSpartan-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/LeagueSpartan-Bold.ttf
+          weight: 700
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf
