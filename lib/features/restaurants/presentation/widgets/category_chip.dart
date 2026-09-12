@@ -1,3 +1,4 @@
+// lib/features/restaurants/presentation/widgets/category_chip.dart
 import 'package:flutter/material.dart';
 
 class CategoryChip extends StatelessWidget {
@@ -15,24 +16,17 @@ class CategoryChip extends StatelessWidget {
   IconData get _icon {
     final key = label.toLowerCase();
 
-    if (key.contains('snack')) {
-      return Icons.fastfood_outlined;
-    }
-
-    if (key.contains('meal') || key.contains('food')) {
-      return Icons.restaurant_outlined;
-    }
-
-    if (key.contains('vegan') || key.contains('veg')) {
-      return Icons.eco_outlined;
-    }
-
+    if (key == 'all') return Icons.grid_view_rounded;
+    if (key.contains('biryani')) return Icons.rice_bowl_outlined;
+    if (key.contains('seafood')) return Icons.set_meal_outlined;
     if (key.contains('dessert') || key.contains('sweet')) {
       return Icons.icecream_outlined;
     }
-
-    if (key.contains('drink') || key.contains('beverage')) {
+    if (key.contains('drink') || key.contains('brewery')) {
       return Icons.local_drink_outlined;
+    }
+    if (key.contains('vegan') || key.contains('veg')) {
+      return Icons.eco_outlined;
     }
 
     return Icons.restaurant_menu_outlined;
@@ -57,9 +51,7 @@ class CategoryChip extends StatelessWidget {
               ),
               child: Icon(
                 _icon,
-                color: isSelected
-                    ? Colors.white
-                    : const Color(0xFFEA5B33),
+                color: isSelected ? Colors.white : const Color(0xFFEA5B33),
                 size: 26,
               ),
             ),
@@ -69,7 +61,7 @@ class CategoryChip extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF2B2B2B),
               ),
