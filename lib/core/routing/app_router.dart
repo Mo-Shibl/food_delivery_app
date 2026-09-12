@@ -1,28 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+
+import 'package:food_delivery_app/features/auth/presentation/screens/login_screen.dart';
+import 'package:food_delivery_app/features/auth/presentation/screens/sign_up_screen.dart';
+import 'package:food_delivery_app/features/auth/presentation/screens/splash_screen.dart';
+
 import '../../core/di/injector.dart';
 import '../../features/restaurants/presentation/cubit/home_cubit.dart';
-import '../../features/restaurants/presentation/screens/home_screen.dart';
+import '../../features/restaurants/presentation/screens/home_screen.dart'
+as restaurants;
 import 'app_routes.dart';
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case AppRoutes.splash:
-        return _comingSoonRoute('Splash');
+        return MaterialPageRoute(
+          builder: (_) => const SplashScreen(),
+        );
 
       case AppRoutes.login:
-        return _comingSoonRoute('Login');
+        return MaterialPageRoute(
+          builder: (_) => const LoginScreen(),
+        );
 
       case AppRoutes.signup:
-        return _comingSoonRoute('Signup');
+        return MaterialPageRoute(
+          builder: (_) => const SignUpScreen(),
+        );
 
       case AppRoutes.home:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (context) => getIt<HomeCubit>(),
-            child: const HomeScreen(),
+            child: const restaurants.HomeScreen(),
           ),
         );
 
@@ -51,16 +63,16 @@ class AppRouter {
         return _comingSoonRoute('Profile');
 
       default:
-        return _comingSoonRoute('Unknown Route');
+        return MaterialPageRoute(
+          builder: (_) => const LoginScreen(),
+        );
     }
   }
 
   static MaterialPageRoute<dynamic> _comingSoonRoute(String screenName) {
     return MaterialPageRoute(
       builder: (_) => Scaffold(
-        appBar: AppBar(
-          title: Text(screenName),
-        ),
+        appBar: AppBar(title: Text(screenName)),
         body: Center(
           child: Text(
             '$screenName\nComing soon',
