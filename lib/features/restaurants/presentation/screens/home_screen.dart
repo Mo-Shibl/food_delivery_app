@@ -214,9 +214,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               ? state.categories
                               : [];
 
-                          // The cubit re-fetches from the API filtered by category
-                          // (filterByCategory -> GET /api/Restaurant?category=),
-                          // so this list is already the correct, server-filtered set.
                           final List<Restaurant> finalRestaurantsList = allRestaurants;
 
                           return SingleChildScrollView(
@@ -232,10 +229,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Categories Row — built from the live
-                                // `type` values returned by the API.
+                                // Categories Row — height set to 105 to fit multi-line titles without clipping
                                 SizedBox(
-                                  height: 82,
+                                  height: 105,
                                   child: ListView.separated(
                                     scrollDirection: Axis.horizontal,
                                     physics: const BouncingScrollPhysics(),
@@ -284,8 +280,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                 const SizedBox(height: 14),
 
                                 // --- Vertical Restaurant List ---
-                                // Required by the PDF: name, type, address,
-                                // parking badge, per restaurant.
                                 if (finalRestaurantsList.isEmpty)
                                   const Padding(
                                     padding: EdgeInsets.symmetric(vertical: 40),
@@ -400,9 +394,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // Maps a live cuisine `type` string (e.g. "Biryani", "Seafood") to a
-  // Material icon, since the project only ships SVG assets for the
-  // original 5 hardcoded labels and the API returns different names.
   IconData _iconForCategory(String category) {
     final key = category.toLowerCase();
 
@@ -442,58 +433,50 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Matches the Figma spec exactly:
-  // Frame: 49x62, radius 30, color yellow2 (orangeBase when selected)
-  // Text: 49x11, top offset 4px below frame (66-62), League Spartan,
-  // weight 400 (regular), size 12, centered, capitalize, color "font"
   Widget _buildCategoryItem({
     required String label,
     required IconData icon,
     required bool isSelected,
     VoidCallback? onTap,
   }) {
+    // Replaces spaces with newline breaks to stack multi-word labels vertically
+    final formattedLabel = label.replaceAll(' ', '\n');
+
     return GestureDetector(
       onTap: onTap,
-      child: SizedBox(
-        width: 49,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 49,
-              height: 62,
-              decoration: BoxDecoration(
-                color: isSelected ? AppColors.orangeBase : AppColors.yellow2,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Center(
-                child: Icon(
-                  icon,
-                  size: 24,
-                  color: isSelected ? AppColors.font2 : AppColors.orangeBase,
-                ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            constraints: const BoxConstraints(minWidth: 49),
+            height: 62,
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            decoration: BoxDecoration(
+              color: isSelected ? AppColors.orangeBase : AppColors.yellow2,
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: Center(
+              child: Icon(
+                icon,
+                size: 24,
+                color: isSelected ? AppColors.font2 : AppColors.orangeBase,
               ),
             ),
-            const SizedBox(height: 4), // 66px top - 62px height = 4px gap
-            SizedBox(
-              width: 49,
-              height: 11,
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontFamily: 'League Spartan',
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  height: 1.0, // line-height: 100%
-                  color: AppColors.font,
-                ),
-              ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            formattedLabel,
+            textAlign: TextAlign.center,
+            softWrap: true,
+            style: const TextStyle(
+              fontFamily: 'League Spartan',
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              height: 1.1,
+              color: AppColors.font,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
