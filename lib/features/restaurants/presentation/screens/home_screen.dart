@@ -5,6 +5,7 @@ import '../../../../core/themes/app_colors.dart';
 import '../../domain/entities/restaurant.dart';
 import '../cubit/home_cubit.dart';
 import '../cubit/home_state.dart';
+import '../widgets/restaurant_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -208,16 +209,15 @@ class _HomeScreenState extends State<HomeScreen> {
                           final String? selectedCategory = state is HomeSuccess
                               ? state.selectedCategory
                               : null;
+                          // Live category list from the cubit, used to build the chips row.
+                          final List<String> liveCategories = state is HomeSuccess
+                              ? state.categories
+                              : [];
 
-                          // Apply safe filtering
-                          final List<Restaurant> displayedRestaurants = (selectedCategory != null && selectedCategory.isNotEmpty)
-                              ? allRestaurants.where((r) => r.type.toLowerCase().contains(selectedCategory.toLowerCase())).toList()
-                              : allRestaurants;
-
-                          // Fallback to all restaurants if category filtering returned empty
-                          final List<Restaurant> finalRestaurantsList = displayedRestaurants.isNotEmpty
-                              ? displayedRestaurants
-                              : allRestaurants;
+                          // The cubit re-fetches from the API filtered by category
+                          // (filterByCategory -> GET /api/Restaurant?category=),
+                          // so this list is already the correct, server-filtered set.
+                          final List<Restaurant> finalRestaurantsList = allRestaurants;
 
                           return SingleChildScrollView(
                             physics: const AlwaysScrollableScrollPhysics(
@@ -232,52 +232,30 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Categories Row
-                                Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    _buildCategoryItem(
-                                      label: 'Snacks',
-                                      iconPath: 'assets/icons/Snacks.svg',
-                                      iconWidth: 32.81,
-                                      iconHeight: 37.0,
-                                      isSelected: selectedCategory == 'Snacks',
-                                      onTap: () => _handleCategoryTap(context, 'Snacks', selectedCategory),
-                                    ),
-                                    _buildCategoryItem(
-                                      label: 'Meals',
-                                      iconPath: 'assets/icons/Meals.svg',
-                                      iconWidth: 17.34,
-                                      iconHeight: 37.0,
-                                      isSelected: selectedCategory == 'Meals',
-                                      onTap: () => _handleCategoryTap(context, 'Meals', selectedCategory),
-                                    ),
-                                    _buildCategoryItem(
-                                      label: 'Vegan',
-                                      iconPath: 'assets/icons/Vegan.svg',
-                                      iconWidth: 37.0,
-                                      iconHeight: 37.0,
-                                      isSelected: selectedCategory == 'Vegan',
-                                      onTap: () => _handleCategoryTap(context, 'Vegan', selectedCategory),
-                                    ),
-                                    _buildCategoryItem(
-                                      label: 'Dessert',
-                                      iconPath: 'assets/icons/Desserts.svg',
-                                      iconWidth: 29.82,
-                                      iconHeight: 37.0,
-                                      isSelected: selectedCategory == 'Dessert',
-                                      onTap: () => _handleCategoryTap(context, 'Dessert', selectedCategory),
-                                    ),
-                                    _buildCategoryItem(
-                                      label: 'Drinks',
-                                      iconPath: 'assets/icons/Drinks.svg',
-                                      iconWidth: 21.14,
-                                      iconHeight: 37.0,
-                                      isSelected: selectedCategory == 'Drinks',
-                                      onTap: () => _handleCategoryTap(context, 'Drinks', selectedCategory),
-                                    ),
-                                  ],
+                                // Categories Row — built from the live
+                                // `type` values returned by the API.
+                                SizedBox(
+                                  height: 82,
+                                  child: ListView.separated(
+                                    scrollDirection: Axis.horizontal,
+                                    physics: const BouncingScrollPhysics(),
+                                    itemCount: liveCategories.length,
+                                    separatorBuilder: (context, index) =>
+                                    const SizedBox(width: 14),
+                                    itemBuilder: (context, index) {
+                                      final category = liveCategories[index];
+                                      final isSelected =
+                                          selectedCategory == category;
+
+                                      return _buildCategoryItem(
+                                        label: category,
+                                        icon: _iconForCategory(category),
+                                        isSelected: isSelected,
+                                        onTap: () => _handleCategoryTap(
+                                            context, category, selectedCategory),
+                                      );
+                                    },
+                                  ),
                                 ),
 
                                 const SizedBox(height: 20),
@@ -291,88 +269,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                 const SizedBox(height: 14),
 
-                                // --- Best Seller Section Header ---
-                                Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const Text(
-                                      'Best Seller',
-                                      style: TextStyle(
-                                        fontFamily: 'League Spartan',
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.0,
-                                        color: AppColors.font,
-                                      ),
-                                    ),
-                                    GestureDetector(
-                                      onTap: () => context.read<HomeCubit>().loadRestaurants(),
-                                      child: const Row(
-                                        children: [
-                                          Text(
-                                            'View All',
-                                            style: TextStyle(
-                                              fontFamily: 'League Spartan',
-                                              fontSize: 11,
-                                              fontWeight: FontWeight.w500,
-                                              height: 1.0,
-                                              color: AppColors.orangeBase,
-                                            ),
-                                          ),
-                                          SizedBox(width: 4),
-                                          RotatedBox(
-                                            quarterTurns: 2,
-                                            child: Icon(
-                                              Icons.arrow_back_ios_new,
-                                              size: 10,
-                                              color: AppColors.orangeBase,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-
-                                const SizedBox(height: 14),
-
-                                // --- Best Seller Horizontal List ---
-                                SizedBox(
-                                  height: 108,
-                                  child: finalRestaurantsList.isEmpty
-                                      ? const Center(
-                                    child: Text(
-                                      'No restaurants available',
-                                      style: TextStyle(
-                                        fontFamily: 'League Spartan',
-                                        fontSize: 12,
-                                        color: AppColors.font,
-                                      ),
-                                    ),
-                                  )
-                                      : ListView.separated(
-                                    scrollDirection: Axis.horizontal,
-                                    physics: const BouncingScrollPhysics(),
-                                    itemCount: finalRestaurantsList.length,
-                                    separatorBuilder: (context, index) =>
-                                    const SizedBox(width: 11.3),
-                                    itemBuilder: (context, index) {
-                                      final restaurant = finalRestaurantsList[index];
-                                      return _buildBestSellerCard(
-                                        title: restaurant.restaurantName,
-                                        price: restaurant.parkingLot ? 'Free P' : 'Parking',
-                                      );
-                                    },
-                                  ),
-                                ),
-
-                                const SizedBox(height: 25),
-
-                                // --- Recommend Section Header ---
-                                const Text(
-                                  'Recommend',
-                                  style: TextStyle(
+                                // --- Restaurants Section Header ---
+                                Text(
+                                  selectedCategory ?? 'All Restaurants',
+                                  style: const TextStyle(
                                     fontFamily: 'League Spartan',
                                     fontSize: 20,
                                     fontWeight: FontWeight.w500,
@@ -383,37 +283,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
                                 const SizedBox(height: 14),
 
-                                // --- Recommend Horizontal List ---
-                                SizedBox(
-                                  height: 140,
-                                  child: finalRestaurantsList.isEmpty
-                                      ? const Center(
-                                    child: Text(
-                                      'No recommended restaurants',
-                                      style: TextStyle(
-                                        fontFamily: 'League Spartan',
-                                        fontSize: 12,
-                                        color: AppColors.font,
+                                // --- Vertical Restaurant List ---
+                                // Required by the PDF: name, type, address,
+                                // parking badge, per restaurant.
+                                if (finalRestaurantsList.isEmpty)
+                                  const Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 40),
+                                    child: Center(
+                                      child: Text(
+                                        'No restaurants available',
+                                        style: TextStyle(
+                                          fontFamily: 'League Spartan',
+                                          fontSize: 12,
+                                          color: AppColors.font,
+                                        ),
                                       ),
                                     ),
                                   )
-                                      : ListView.separated(
-                                    scrollDirection: Axis.horizontal,
-                                    physics: const BouncingScrollPhysics(),
-                                    itemCount: finalRestaurantsList.length,
-                                    separatorBuilder: (context, index) =>
-                                    const SizedBox(width: 15),
-                                    itemBuilder: (context, index) {
-                                      final restaurant = finalRestaurantsList[index];
-                                      return _buildRecommendCard(
-                                        title: restaurant.restaurantName,
-                                        type: restaurant.type,
-                                        rating: '5.0',
-                                        isFavorite: false,
-                                      );
-                                    },
+                                else
+                                  ...finalRestaurantsList.map(
+                                        (restaurant) => Padding(
+                                      padding: const EdgeInsets.only(bottom: 12),
+                                      child: RestaurantCard(restaurant: restaurant),
+                                    ),
                                   ),
-                                ),
                               ],
                             ),
                           );
@@ -507,186 +400,20 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // --- Recommend Card ---
-  Widget _buildRecommendCard({
-    required String title,
-    required String type,
-    required String rating,
-    bool isFavorite = false,
-  }) {
-    return Container(
-      width: 159,
-      height: 140,
-      padding: const EdgeInsets.all(10),
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: AppColors.yellow2,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Stack(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              const Icon(
-                Icons.restaurant,
-                color: AppColors.orangeBase,
-                size: 28,
-              ),
-              const SizedBox(height: 6),
-              Text(
-                title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontFamily: 'League Spartan',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.font,
-                ),
-              ),
-              Text(
-                type,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontFamily: 'League Spartan',
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                  color: AppColors.orangeBase,
-                ),
-              ),
-            ],
-          ),
+  // Maps a live cuisine `type` string (e.g. "Biryani", "Seafood") to a
+  // Material icon, since the project only ships SVG assets for the
+  // original 5 hardcoded labels and the API returns different names.
+  IconData _iconForCategory(String category) {
+    final key = category.toLowerCase();
 
-          // Rating Badge
-          Positioned(
-            top: 0,
-            left: 0,
-            child: Container(
-              height: 16,
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              decoration: BoxDecoration(
-                color: AppColors.font2,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    rating,
-                    style: const TextStyle(
-                      fontFamily: 'League Spartan',
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF391713),
-                    ),
-                  ),
-                  const SizedBox(width: 2),
-                  const Icon(
-                    Icons.star_rounded,
-                    size: 10,
-                    color: Color(0xFFF4BA1B),
-                  ),
-                ],
-              ),
-            ),
-          ),
+    if (key.contains('biryani') || key.contains('rice')) return Icons.rice_bowl_outlined;
+    if (key.contains('seafood')) return Icons.set_meal_outlined;
+    if (key.contains('dessert') || key.contains('sweet')) return Icons.icecream_outlined;
+    if (key.contains('drink') || key.contains('brewery')) return Icons.local_drink_outlined;
+    if (key.contains('vegan') || key.contains('veg')) return Icons.eco_outlined;
+    if (key.contains('fine dining')) return Icons.dinner_dining_outlined;
 
-          // Favorites Button
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Container(
-              width: 18,
-              height: 18,
-              decoration: const BoxDecoration(
-                color: AppColors.font2,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                child: Icon(
-                  isFavorite ? Icons.favorite : Icons.favorite_border_rounded,
-                  size: 11,
-                  color: AppColors.orangeBase,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // --- Best Seller Card ---
-  Widget _buildBestSellerCard({
-    required String title,
-    required String price,
-  }) {
-    return Container(
-      width: 80,
-      height: 108,
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-      clipBehavior: Clip.antiAlias,
-      decoration: BoxDecoration(
-        color: AppColors.yellow2,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.fastfood,
-                  color: AppColors.orangeBase,
-                  size: 24,
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontFamily: 'League Spartan',
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.font,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Price / Parking Tag
-          Positioned(
-            right: 0,
-            bottom: 0,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-              decoration: BoxDecoration(
-                color: AppColors.orangeBase,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                price,
-                style: const TextStyle(
-                  fontFamily: 'League Spartan',
-                  fontSize: 8,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.font2,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+    return Icons.restaurant_menu_outlined;
   }
 
   Widget _buildHeaderIconBox({
@@ -715,55 +442,58 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // Matches the Figma spec exactly:
+  // Frame: 49x62, radius 30, color yellow2 (orangeBase when selected)
+  // Text: 49x11, top offset 4px below frame (66-62), League Spartan,
+  // weight 400 (regular), size 12, centered, capitalize, color "font"
   Widget _buildCategoryItem({
     required String label,
-    required String iconPath,
-    required double iconWidth,
-    required double iconHeight,
+    required IconData icon,
     required bool isSelected,
     VoidCallback? onTap,
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 49,
-            height: 62,
-            decoration: BoxDecoration(
-              color: isSelected ? AppColors.orangeBase : AppColors.yellow2,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: Center(
-              child: SvgPicture.asset(
-                iconPath,
-                width: iconWidth,
-                height: iconHeight,
-                colorFilter: ColorFilter.mode(
-                  isSelected ? AppColors.font2 : AppColors.orangeBase,
-                  BlendMode.srcIn,
+      child: SizedBox(
+        width: 49,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 49,
+              height: 62,
+              decoration: BoxDecoration(
+                color: isSelected ? AppColors.orangeBase : AppColors.yellow2,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Center(
+                child: Icon(
+                  icon,
+                  size: 24,
+                  color: isSelected ? AppColors.font2 : AppColors.orangeBase,
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 4),
-          SizedBox(
-            width: 49,
-            height: 11,
-            child: Text(
-              label,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'League Spartan',
-                fontSize: 11,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                height: 1.0,
-                color: isSelected ? AppColors.orangeBase : AppColors.font,
+            const SizedBox(height: 4), // 66px top - 62px height = 4px gap
+            SizedBox(
+              width: 49,
+              height: 11,
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontFamily: 'League Spartan',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  height: 1.0, // line-height: 100%
+                  color: AppColors.font,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
