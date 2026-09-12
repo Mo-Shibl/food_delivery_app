@@ -9,7 +9,8 @@ import 'package:food_delivery_app/features/auth/presentation/screens/splash_scre
 import '../../core/di/injector.dart';
 import '../../features/restaurants/presentation/cubit/home_cubit.dart';
 import '../../features/restaurants/presentation/screens/home_screen.dart'
-as restaurants;
+    as restaurants;
+import '../../features/restaurants/presentation/screens/profile_screen.dart';
 import 'app_routes.dart';
 
 class AppRouter {
@@ -60,7 +61,9 @@ class AppRouter {
         return _comingSoonRoute('Order Details');
 
       case AppRoutes.profile:
-        return _comingSoonRoute('Profile');
+        return MaterialPageRoute(
+          builder: (_) => const ProfileScreen(),
+        );
 
       default:
         return MaterialPageRoute(
