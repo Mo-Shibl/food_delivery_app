@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
+import 'profile_screen.dart';
 import '../../../../core/themes/app_colors.dart';
 import '../../domain/entities/restaurant.dart';
 import '../cubit/home_cubit.dart';
@@ -15,6 +16,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -24,6 +27,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      endDrawer: const ProfileScreen(),
+      drawerScrimColor: const Color(0x4FFE4A0C), // rgba(254, 74, 12, 0.31)
       backgroundColor: AppColors.yellowBase,
       body: SafeArea(
         bottom: false,
@@ -113,6 +119,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             iconPath: 'assets/icons/profile.svg',
                             iconWidth: 12,
                             iconHeight: 18,
+                            onTap: () {
+                              _scaffoldKey.currentState?.openEndDrawer();
+                            },
                           ),
                         ],
                       ),
@@ -411,22 +420,26 @@ class _HomeScreenState extends State<HomeScreen> {
     required String iconPath,
     required double iconWidth,
     required double iconHeight,
+    VoidCallback? onTap,
   }) {
-    return Container(
-      width: 26,
-      height: 26,
-      decoration: BoxDecoration(
-        color: AppColors.font2,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Center(
-        child: SvgPicture.asset(
-          iconPath,
-          width: iconWidth,
-          height: iconHeight,
-          colorFilter: const ColorFilter.mode(
-            AppColors.orangeBase,
-            BlendMode.srcIn,
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 26,
+        height: 26,
+        decoration: BoxDecoration(
+          color: AppColors.font2,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Center(
+          child: SvgPicture.asset(
+            iconPath,
+            width: iconWidth,
+            height: iconHeight,
+            colorFilter: const ColorFilter.mode(
+              AppColors.orangeBase,
+              BlendMode.srcIn,
+            ),
           ),
         ),
       ),

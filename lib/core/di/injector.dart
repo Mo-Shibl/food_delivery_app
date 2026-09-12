@@ -13,6 +13,11 @@ import '../../features/restaurants/data/services/restaurant_remote_service.dart'
 import '../../features/restaurants/domain/repositories/restaurant_repository.dart';
 import '../../features/restaurants/presentation/cubit/home_cubit.dart';
 
+import '../../features/profile/data/repositories/profile_repository_impl.dart';
+import '../../features/profile/data/services/profile_remote_service.dart';
+import '../../features/profile/domain/repositories/profile_repository.dart';
+import '../../features/profile/presentation/cubit/profile_cubit.dart';
+
 final getIt = GetIt.instance;
 
 void setupGetIt() {
@@ -56,5 +61,16 @@ void setupGetIt() {
         () => HomeCubit(
       getIt<RestaurantRepository>(),
     ),
+  );
+  getIt.registerLazySingleton<ProfileRemoteService>(
+        () => ProfileRemoteService(getIt<Dio>()),
+  );
+
+  getIt.registerLazySingleton<ProfileRepository>(
+        () => ProfileRepositoryImpl(getIt<ProfileRemoteService>()),
+  );
+
+  getIt.registerFactory<ProfileCubit>(
+        () => ProfileCubit(getIt<ProfileRepository>()),
   );
 }

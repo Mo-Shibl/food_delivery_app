@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../screens/profile_screen.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({super.key});
@@ -70,7 +71,15 @@ class HomeHeader extends StatelessWidget {
               const SizedBox(width: 8),
               _HeaderIconButton(
                 icon: Icons.person_outline,
-                onTap: () {},
+                onTap: () {
+                  debugPrint('=== PROFILE ICON CLICKED ===');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ProfileScreen(),
+                    ),
+                  );
+                },
               ),
             ],
           ),
