@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_delivery_app/core/routing/app_router.dart';
 import 'package:food_delivery_app/core/routing/app_routes.dart';
+
 import '../../../../core/di/injector.dart';
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_text_styles.dart';
@@ -33,9 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _login(BuildContext context) {
     context.read<AuthCubit>().login(
-          email: _emailController.text,
-          password: _passwordController.text,
-        );
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
   }
 
   @override
@@ -46,10 +46,10 @@ class _LoginScreenState extends State<LoginScreen> {
         listener: (context, state) {
           if (state is AuthSuccess) {
             Navigator.pushNamedAndRemoveUntil(
-    context,
-    AppRoutes.home,
-    (route) => false,
-  );
+              context,
+              AppRoutes.home,
+                  (route) => false,
+            );
           }
 
           if (state is AuthError) {
@@ -66,6 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
           return Scaffold(
             backgroundColor: AppColors.yellowBase,
+            resizeToAvoidBottomInset: true,
             body: Stack(
               children: [
                 // Back button
@@ -82,8 +83,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-            
-                
+
+                // Hello
                 Positioned(
                   top: 80,
                   left: 0,
@@ -97,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-            
+
                 // White login container
                 Positioned(
                   top: 161,
@@ -107,13 +108,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Container(
                     decoration: const BoxDecoration(
                       color: AppColors.font2,
-                
                       borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(30),
                         topRight: Radius.circular(30),
                       ),
                     ),
-                    child: Padding(
+                    child: SingleChildScrollView(
+                      keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 35,
                         vertical: 40,
@@ -122,20 +124,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const SizedBox(height: 10),
-            
-                         Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Welcome',
-                style: AppTextStyles.title.copyWith(
-                  color: AppColors.font,
-                ),
-              ),
-            ),
-            
+
+                          // Welcome
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Welcome',
+                              style: AppTextStyles.title.copyWith(
+                                color: AppColors.font,
+                              ),
+                            ),
+                          ),
+
                           const SizedBox(height: 35),
-            
-                          // Email
+
+                          // Email label
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -146,17 +149,18 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-            
+
                           const SizedBox(height: 8),
-            
+
+                          // Email field
                           AppTextField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                           ),
-            
+
                           const SizedBox(height: 20),
-            
-                          // Password
+
+                          // Password label
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
@@ -167,9 +171,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-            
+
                           const SizedBox(height: 8),
-            
+
+                          // Password field
                           AppTextField(
                             controller: _passwordController,
                             obscureText: _obscurePassword,
@@ -187,13 +192,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                           ),
-            
-                         
-            
-                 
+
                           const SizedBox(height: 55),
-            
-                          // Login button
+
+                          // Login button / Loader
                           if (isLoading)
                             const SizedBox(
                               height: 45,
@@ -202,11 +204,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           else
                             PrimaryButton(
                               text: 'Login',
-                              onPressed : () => _login(context),
+                              onPressed: () => _login(context),
                             ),
-            
+
                           const SizedBox(height: 25),
-            
+
                           // Sign up
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -222,14 +224,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   Navigator.pushNamedAndRemoveUntil(
                                     context,
                                     AppRoutes.signup,
-                                    (route) => false,
+                                        (route) => false,
                                   );
                                 },
                                 child: Text(
                                   'Sign Up',
                                   style: AppTextStyles.paragraph.copyWith(
                                     color: AppColors.orangeBase,
-                        
                                   ),
                                 ),
                               ),
@@ -248,4 +249,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-

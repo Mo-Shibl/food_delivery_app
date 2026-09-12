@@ -22,10 +22,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  TextEditingController();
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _dateOfBirthController =
-      TextEditingController();
+  TextEditingController();
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
@@ -42,10 +42,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _signUp(BuildContext context) {
     context.read<AuthCubit>().register(
-          email: _emailController.text,
-          password: _passwordController.text,
-          confirmPassword: _confirmPasswordController.text,
-        );
+      email: _emailController.text,
+      password: _passwordController.text,
+      confirmPassword: _confirmPasswordController.text,
+    );
   }
 
   Future<void> _selectDateOfBirth() async {
@@ -59,7 +59,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (selectedDate != null) {
       setState(() {
         _dateOfBirthController.text =
-            '${selectedDate.day.toString().padLeft(2, '0')}/'
+        '${selectedDate.day.toString().padLeft(2, '0')}/'
             '${selectedDate.month.toString().padLeft(2, '0')}/'
             '${selectedDate.year}';
       });
@@ -82,12 +82,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Navigator.pushNamedAndRemoveUntil(
               context,
               AppRoutes.login,
-              (route) => false,
+                  (route) => false,
             );
           }
 
           if (state is AuthError) {
-            print(state.message);
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
@@ -101,6 +100,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
           return Scaffold(
             backgroundColor: AppColors.yellowBase,
+            resizeToAvoidBottomInset: true,
             body: Stack(
               children: [
                 // Back button
@@ -112,28 +112,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Navigator.pop(context);
                     },
                     icon: const Icon(
-                       Icons.chevron_left,
+                      Icons.chevron_left,
                       color: AppColors.orangeBase,
                     ),
                   ),
                 ),
-            
+
                 // New Account
                 Positioned(
                   top: 80,
                   left: 0,
                   right: 0,
                   child: Align(
-                alignment: Alignment.topCenter,
-                child: Text(
-                  'New Account',
-                  style: AppTextStyles.tituloScreen.copyWith(
-                    color: AppColors.font2,
+                    alignment: Alignment.topCenter,
+                    child: Text(
+                      'New Account',
+                      style: AppTextStyles.tituloScreen.copyWith(
+                        color: AppColors.font2,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-                ),
-            
+
                 // White container
                 Positioned(
                   top: 161,
@@ -148,7 +148,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         topRight: Radius.circular(30),
                       ),
                     ),
-                    child: Padding(
+                    child: SingleChildScrollView(
+                      keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 35,
                         vertical: 35,
@@ -156,51 +158,48 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                        
-                        Align(
+                          // Email
+                          Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Email',
                               style: AppTextStyles.subtitulo.copyWith(
                                 color: AppColors.font,
                                 fontWeight: FontWeight.w500,
-                    
                               ),
                             ),
                           ),
-            
+
                           const SizedBox(height: 8),
-                          // Email
+
                           AppTextField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
                           ),
-            
+
                           const SizedBox(height: 15),
-                                      Align(
+
+                          // Password
+                          Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Password',
                               style: AppTextStyles.subtitulo.copyWith(
                                 color: AppColors.font,
                                 fontWeight: FontWeight.w500,
-                    
                               ),
                             ),
                           ),
-            
+
                           const SizedBox(height: 8),
-            
-                          // Password
+
                           AppTextField(
                             controller: _passwordController,
-                        
                             obscureText: _obscurePassword,
                             suffixIcon: IconButton(
                               onPressed: () {
                                 setState(() {
-                                  _obscurePassword =
-                                      !_obscurePassword;
+                                  _obscurePassword = !_obscurePassword;
                                 });
                               },
                               icon: Icon(
@@ -211,23 +210,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                             ),
                           ),
-            
+
                           const SizedBox(height: 15),
-                                      Align(
+
+                          // Confirm Password
+                          Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Confirm Password',
                               style: AppTextStyles.subtitulo.copyWith(
                                 color: AppColors.font,
                                 fontWeight: FontWeight.w500,
-                    
                               ),
                             ),
                           ),
-            
+
                           const SizedBox(height: 8),
-            
-                          // Confirm password
+
                           AppTextField(
                             controller: _confirmPasswordController,
                             obscureText: _obscureConfirmPassword,
@@ -235,7 +234,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               onPressed: () {
                                 setState(() {
                                   _obscureConfirmPassword =
-                                      !_obscureConfirmPassword;
+                                  !_obscureConfirmPassword;
                                 });
                               },
                               icon: Icon(
@@ -246,49 +245,49 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                             ),
                           ),
-            
+
                           const SizedBox(height: 15),
-                        Align(
+
+                          // Mobile Number
+                          Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Mobile Number',
                               style: AppTextStyles.subtitulo.copyWith(
                                 color: AppColors.font,
                                 fontWeight: FontWeight.w500,
-                    
                               ),
                             ),
                           ),
-            
+
                           const SizedBox(height: 8),
-                          // Mobile number
+
                           AppTextField(
                             controller: _mobileController,
                             keyboardType: TextInputType.phone,
                           ),
-            
+
                           const SizedBox(height: 15),
-                                      Align(
+
+                          // Date of birth
+                          Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
                               'Date of birth',
                               style: AppTextStyles.subtitulo.copyWith(
                                 color: AppColors.font,
                                 fontWeight: FontWeight.w500,
-                    
                               ),
                             ),
                           ),
-            
+
                           const SizedBox(height: 8),
-            
-                          // Date of birth
+
                           GestureDetector(
                             onTap: _selectDateOfBirth,
                             child: AbsorbPointer(
                               child: AppTextField(
                                 controller: _dateOfBirthController,
-                            
                                 suffixIcon: const Icon(
                                   Icons.calendar_today_outlined,
                                   color: AppColors.font,
@@ -296,9 +295,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                             ),
                           ),
-            
+
                           const SizedBox(height: 20),
-            
+
                           // Terms and privacy
                           Padding(
                             padding: const EdgeInsets.symmetric(
@@ -336,9 +335,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               textAlign: TextAlign.center,
                             ),
                           ),
-            
+
                           const SizedBox(height: 16),
-            
+
                           // Sign Up button
                           if (isLoading)
                             const SizedBox(
@@ -350,9 +349,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               text: 'Sign Up',
                               onPressed: () => _signUp(context),
                             ),
-            
+
                           const SizedBox(height: 16),
-            
+
                           // Login
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -368,7 +367,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   Navigator.pushNamedAndRemoveUntil(
                                     context,
                                     AppRoutes.login,
-                                    (route) => false,
+                                        (route) => false,
                                   );
                                 },
                                 child: Text(
@@ -381,7 +380,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               ),
                             ],
                           ),
-            
+
                           const SizedBox(height: 16),
                         ],
                       ),
@@ -396,4 +395,3 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 }
-
