@@ -8,9 +8,11 @@ import 'package:food_delivery_app/features/auth/presentation/screens/splash_scre
 
 import '../../core/di/injector.dart';
 import '../../features/restaurants/presentation/cubit/home_cubit.dart';
+import '../../features/restaurants/presentation/cubit/restaurant_details_cubit.dart';
 import '../../features/restaurants/presentation/screens/home_screen.dart'
     as restaurants;
 import '../../features/restaurants/presentation/screens/profile_screen.dart';
+import '../../features/restaurants/presentation/screens/restaurant_details_screen.dart';
 import 'app_routes.dart';
 
 class AppRouter {
@@ -40,7 +42,13 @@ class AppRouter {
         );
 
       case AppRoutes.restaurantDetails:
-        return _comingSoonRoute('Restaurant Details');
+        final restaurantId = settings.arguments as int;
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<RestaurantDetailsCubit>(),
+            child: RestaurantDetailsScreen(restaurantId: restaurantId),
+          ),
+        );
 
       case AppRoutes.search:
         return _comingSoonRoute('Search');

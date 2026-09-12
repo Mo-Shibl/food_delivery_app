@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 
 import '../models/restaurant_model.dart';
+import '../models/menu_item_model.dart';
 
 class RestaurantRemoteService {
   final Dio dio;
@@ -48,6 +49,26 @@ class RestaurantRemoteService {
     return RestaurantModel.fromJson(
       response.data as Map<String, dynamic>,
     );
+  }
+
+  Future<List<MenuItemModel>> getMenuForRestaurant(
+    int id, {
+    String? sortByPrice,
+  }) async {
+    final response = await dio.get(
+      '/api/Restaurant/$id/menu',
+      queryParameters: sortByPrice != null ? {'sortbyprice': sortByPrice} : null,
+    );
+
+    final List<dynamic> data = response.data as List<dynamic>;
+
+    return data
+        .map(
+          (json) => MenuItemModel.fromJson(
+            json as Map<String, dynamic>,
+          ),
+        )
+        .toList();
   }
 
   Future<List<RestaurantModel>> searchRestaurants({

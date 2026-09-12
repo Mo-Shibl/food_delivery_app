@@ -196,9 +196,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           left: 60,
                           bottom: 50,
                           child: GestureDetector(
-                            onTap: () {
-                              context.read<ProfileCubit>().logout();
-                            },
+                            onTap: () => _showLogoutConfirmation(context),
                             child: Row(
                               children: [
                                 Container(
@@ -240,6 +238,107 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         },
       ),
+    );
+  }
+
+  void _showLogoutConfirmation(BuildContext context) {
+    final profileCubit = context.read<ProfileCubit>();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: const Color(0x4FFE4A0C), // rgba(254, 74, 12, 0.31)
+      builder: (context) {
+        return Container(
+          height: 199,
+          width: double.infinity,
+          decoration: const BoxDecoration(
+            color: AppColors.font2, // background: #F8F8F8
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          child: Stack(
+            children: [
+              // Are you sure you want to log out?
+              Positioned(
+                top: 48, // 701 - 653 = 48
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: Text(
+                    'Are you sure you want to log out?',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'League Spartan',
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black,
+                      height: 18 / 20,
+                    ),
+                  ),
+                ),
+              ),
+              // Cancel Button
+              Positioned(
+                left: 25,
+                top: 120,
+                child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    width: 153.29,
+                    height: 37,
+                    decoration: BoxDecoration(
+                      color: AppColors.orange2, // background: #FFDECF
+                      borderRadius: BorderRadius.circular(50.2143),
+                    ),
+                    alignment: Alignment.center,
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(
+                        fontFamily: 'League Spartan',
+                        fontSize: 22.4643,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.orangeBase, // color: #E95322
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              // Yes Button
+              Positioned(
+                left: 190,
+                top: 120,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                    profileCubit.logout();
+                  },
+                  child: Container(
+                    width: 153.29,
+                    height: 37,
+                    decoration: BoxDecoration(
+                      color: AppColors.orangeBase, // background: #E95322
+                      borderRadius: BorderRadius.circular(50.2143),
+                    ),
+                    alignment: Alignment.center,
+                    child: const Text(
+                      'Yes, logout',
+                      style: TextStyle(
+                        fontFamily: 'League Spartan',
+                        fontSize: 22.4643,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
