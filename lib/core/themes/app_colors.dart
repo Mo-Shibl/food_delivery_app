@@ -13,4 +13,6 @@ class AppColors {
   // Text colors
   static const Color font = Color(0xFF391713);
   static const Color font2 = Color(0xFFF8F8F8);
+  static const Color hint = Color(0xFF676767);
+  static const Color text2 = Color(0xFF252525);
 }

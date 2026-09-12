@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:food_delivery_app/features/auth/presentation/screens/home_screen.dart';
+import 'package:food_delivery_app/features/auth/presentation/screens/login_screen.dart';
+import 'package:food_delivery_app/features/auth/presentation/screens/sign_up_screen.dart';
+import 'package:food_delivery_app/features/auth/presentation/screens/splash_screen.dart';
 
 import 'app_routes.dart';
 
@@ -6,16 +10,19 @@ class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case AppRoutes.splash:
-        return _comingSoonRoute('Splash');
+         return MaterialPageRoute(
+    builder: (_) => const SplashScreen(),
+  );
 
       case AppRoutes.login:
-        return _comingSoonRoute('Login');
+        return MaterialPageRoute(builder: (_) => const LoginScreen());
 
       case AppRoutes.signup:
-        return _comingSoonRoute('Signup');
+        return MaterialPageRoute(builder: (_) => const SignUpScreen());
 
       case AppRoutes.home:
-        return _comingSoonRoute('Home');
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
+
 
       case AppRoutes.restaurantDetails:
         return _comingSoonRoute('Restaurant Details');
@@ -40,25 +47,19 @@ class AppRouter {
 
       case AppRoutes.profile:
         return _comingSoonRoute('Profile');
-
-      default:
-        return _comingSoonRoute('Unknown Route');
+    default: return MaterialPageRoute( builder: (_) => const LoginScreen(), );
     }
   }
 
   static MaterialPageRoute<dynamic> _comingSoonRoute(String screenName) {
     return MaterialPageRoute(
       builder: (_) => Scaffold(
-        appBar: AppBar(
-          title: Text(screenName),
-        ),
+        appBar: AppBar(title: Text(screenName)),
         body: Center(
-          child: Text(
-            '$screenName\nComing soon',
-            textAlign: TextAlign.center,
-          ),
+          child: Text('$screenName\nComing soon', textAlign: TextAlign.center),
         ),
       ),
     );
   }
 }
+
