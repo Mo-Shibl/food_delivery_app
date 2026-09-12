@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../core/di/injector.dart';
+import '../../features/restaurants/presentation/cubit/home_cubit.dart';
+import '../../features/restaurants/presentation/screens/home_screen.dart';
 import 'app_routes.dart';
 
 class AppRouter {
@@ -15,7 +19,12 @@ class AppRouter {
         return _comingSoonRoute('Signup');
 
       case AppRoutes.home:
-        return _comingSoonRoute('Home');
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (context) => getIt<HomeCubit>(),
+            child: const HomeScreen(),
+          ),
+        );
 
       case AppRoutes.restaurantDetails:
         return _comingSoonRoute('Restaurant Details');
