@@ -1,22 +1,27 @@
 // lib/features/restaurants/presentation/widgets/restaurant_card.dart
 import 'package:flutter/material.dart';
 
+import '../../../../core/routing/app_routes.dart';
 import '../../domain/entities/restaurant.dart';
 
 class RestaurantCard extends StatelessWidget {
   final Restaurant restaurant;
-  final VoidCallback? onTap;
 
   const RestaurantCard({
     super.key,
     required this.restaurant,
-    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: () {
+        Navigator.pushNamed(
+          context,
+          AppRoutes.restaurantDetails,
+          arguments: restaurant.restaurantID,
+        );
+      },
       borderRadius: BorderRadius.circular(20),
       child: Container(
         padding: const EdgeInsets.all(14),
