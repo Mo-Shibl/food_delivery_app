@@ -19,6 +19,11 @@ import '../../features/profile/data/services/profile_remote_service.dart';
 import '../../features/profile/domain/repositories/profile_repository.dart';
 import '../../features/profile/presentation/cubit/profile_cubit.dart';
 
+import '../../features/menu/data/repositories/menu_repository_impl.dart';
+import '../../features/menu/data/services/menu_remote_service.dart';
+import '../../features/menu/domain/repositories/menu_repository.dart';
+import '../../features/menu/presentation/cubit/item_details_cubit.dart';
+
 final getIt = GetIt.instance;
 
 void setupGetIt() {
@@ -81,5 +86,22 @@ void setupGetIt() {
 
   getIt.registerFactory<ProfileCubit>(
         () => ProfileCubit(getIt<ProfileRepository>()),
+  );
+
+  // Menu Remote Service
+  getIt.registerLazySingleton<MenuRemoteService>(
+    () => MenuRemoteService(getIt<Dio>()),
+  );
+
+  // Menu Repository
+  getIt.registerLazySingleton<MenuRepository>(
+    () => MenuRepositoryImpl(
+      getIt<MenuRemoteService>(),
+    ),
+  );
+
+  // Item Details Cubit
+  getIt.registerFactory<ItemDetailsCubit>(
+    () => ItemDetailsCubit(),
   );
 }

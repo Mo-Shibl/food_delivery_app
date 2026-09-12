@@ -10,6 +10,7 @@ import '../cubit/restaurant_details_cubit.dart';
 import '../cubit/restaurant_details_state.dart';
 import '../../domain/entities/restaurant.dart';
 import '../../domain/entities/menu_item.dart';
+import '../../../../features/menu/domain/entities/menu_item.dart' as menu_feature;
 import '../../../../core/routing/app_routes.dart';
 
 class RestaurantDetailsScreen extends StatefulWidget {
@@ -150,7 +151,7 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
             delegate: SliverChildBuilderDelegate(
               (context, index) {
                 final item = menu[index];
-                return _buildMenuItem(item);
+                return _buildMenuItem(item, restaurant);
               },
               childCount: menu.length,
             ),
@@ -160,12 +161,20 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
     );
   }
 
-  Widget _buildMenuItem(MenuItem item) {
+  Widget _buildMenuItem(MenuItem item, Restaurant restaurant) {
     return InkWell(
       onTap: () => Navigator.pushNamed(
         context,
         AppRoutes.itemDetails,
-        arguments: item.itemID,
+        arguments: menu_feature.MenuItem(
+          itemID: item.itemID,
+          itemName: item.itemName,
+          itemDescription: item.itemDescription,
+          itemPrice: item.itemPrice,
+          restaurantName: restaurant.restaurantName,
+          restaurantID: restaurant.restaurantID,
+          imageUrl: item.imageUrl,
+        ),
       ),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -230,7 +239,7 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    '₹${item.itemPrice.toStringAsFixed(0)}',
+                    '${item.itemPrice.toStringAsFixed(0)} EGP',
                     style: AppTextStyles.subtitulo.copyWith(
                       fontSize: 14,
                       color: AppColors.orangeBase,

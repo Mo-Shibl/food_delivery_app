@@ -13,6 +13,8 @@ import '../../features/restaurants/presentation/screens/home_screen.dart'
     as restaurants;
 import '../../features/restaurants/presentation/screens/profile_screen.dart';
 import '../../features/restaurants/presentation/screens/restaurant_details_screen.dart';
+import '../../features/menu/domain/entities/menu_item.dart';
+import '../../features/menu/presentation/screens/item_details_screen.dart';
 import 'app_routes.dart';
 
 class AppRouter {
@@ -54,7 +56,10 @@ class AppRouter {
         return _comingSoonRoute('Search');
 
       case AppRoutes.itemDetails:
-        return _comingSoonRoute('Item Details');
+        final menuItem = settings.arguments as MenuItem;
+        return MaterialPageRoute(
+          builder: (_) => ItemDetailsScreen(menuItem: menuItem),
+        );
 
       case AppRoutes.cart:
         return _comingSoonRoute('Cart');
