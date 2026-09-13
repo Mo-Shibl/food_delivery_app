@@ -235,18 +235,26 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
                 width: 80,
                 height: 80,
                 fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
-                  color: AppColors.yellow2,
-                  child: const Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      color: AppColors.orangeBase,
+                placeholder: (context, url) => const SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: ColoredBox(
+                    color: AppColors.yellow2,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: AppColors.orangeBase,
+                      ),
                     ),
                   ),
                 ),
-                errorWidget: (context, url, error) => Container(
-                  color: AppColors.yellow2,
-                  child: const Icon(Icons.fastfood, color: AppColors.orangeBase),
+                errorWidget: (context, url, error) => const SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: ColoredBox(
+                    color: AppColors.yellow2,
+                    child: Icon(Icons.fastfood, color: AppColors.orangeBase),
+                  ),
                 ),
               ),
             ),

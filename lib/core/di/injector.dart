@@ -1,9 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:food_delivery_app/features/cart/presentation/cubit/cart_cubit.dart';
-import 'package:food_delivery_app/features/orders/data/repositories/orders_repository_impl.dart';
-import 'package:food_delivery_app/features/orders/data/services/orders_remote_service.dart';
-import 'package:food_delivery_app/features/orders/domain/repositories/orders_repository.dart';
-import 'package:food_delivery_app/features/orders/presentation/cubit/orders_cubit.dart';
 import 'package:get_it/get_it.dart';
 
 import '../networking/dio_factory.dart';
@@ -31,6 +26,11 @@ import '../../features/menu/domain/repositories/menu_repository.dart';
 import '../../features/menu/presentation/cubit/item_details_cubit.dart';
 import '../../features/menu/presentation/cubit/menu_cubit.dart';
 import '../../features/cart/presentation/cubit/cart_cubit.dart';
+
+import '../../features/orders/data/repositories/orders_repository_impl.dart';
+import '../../features/orders/data/services/orders_remote_service.dart';
+import '../../features/orders/domain/repositories/orders_repository.dart';
+import '../../features/orders/presentation/cubit/orders_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -129,5 +129,20 @@ void setupGetIt() {
   // Cart Cubit
   getIt.registerLazySingleton<CartCubit>(
     () => CartCubit(),
+  );
+
+  // Orders Remote Service
+  getIt.registerLazySingleton<OrdersRemoteService>(
+    () => OrdersRemoteService(getIt<Dio>()),
+  );
+
+  // Orders Repository
+  getIt.registerLazySingleton<OrdersRepository>(
+    () => OrdersRepositoryImpl(getIt<OrdersRemoteService>()),
+  );
+
+  // Orders Cubit
+  getIt.registerFactory<OrdersCubit>(
+    () => OrdersCubit(getIt<OrdersRepository>()),
   );
 }

@@ -5,6 +5,7 @@ import '../../../../core/di/injector.dart';
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_text_styles.dart';
 import '../../../../core/routing/app_routes.dart';
+import '../../../../core/widgets/food_delivery_scaffold.dart';
 import '../cubit/search_cubit.dart';
 import '../cubit/search_state.dart';
 import '../widgets/restaurant_card.dart';
@@ -30,11 +31,14 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<SearchCubit>(),
-      child: Scaffold(
-        backgroundColor: AppColors.font2,
+      child: FoodDeliveryScaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: AppColors.font),
+            onPressed: () => Navigator.pop(context),
+          ),
           title: Text(
             'Search',
             style: AppTextStyles.tituloScreen.copyWith(color: AppColors.font),
@@ -130,7 +134,10 @@ class _SearchScreenState extends State<SearchScreen> {
                       }
 
                       if (state is SearchSuccess) {
-                        return _buildResults(context, state);
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 80),
+                          child: _buildResults(context, state),
+                        );
                       }
 
                       return const SizedBox.shrink();
