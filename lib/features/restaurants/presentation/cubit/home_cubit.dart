@@ -92,4 +92,35 @@ class HomeCubit extends Cubit<HomeState> {
         .toSet()
         .toList();
   }
+
+
+ Future<void> searchRestaurants(String query) async {
+  if (query.trim().isEmpty) {
+  await refresh();
+  return;
+}
+
+  emit(const HomeLoading());
+
+  try {
+    final result = await repository.searchRestaurants(
+      name: query.trim(),
+    );
+
+    if (result is ApiSuccess<List<Restaurant>>) {
+      final restaurants = result.data;
+
+      emit(
+        HomeSuccess(
+          restaurants: restaurants,
+          categories: _getCategories(restaurants),
+        ),
+      );
+    } else if (result is ApiFailure<List<Restaurant>>) {
+      emit(HomeError(result.message));
+    }
+  } catch (e) {
+    emit(HomeError(e.toString()));
+  }
+}
 }

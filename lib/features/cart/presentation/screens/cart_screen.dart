@@ -2,11 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:food_delivery_app/core/routing/app_routes.dart';
 import 'package:food_delivery_app/core/themes/app_colors.dart';
 import 'package:food_delivery_app/features/cart/presentation/cubit/cart_cubit.dart';
 import 'package:food_delivery_app/features/cart/presentation/cubit/cart_state.dart';
 import 'package:food_delivery_app/features/cart/domain/entities/cart_line.dart';
 import 'package:food_delivery_app/core/widgets/primary_button.dart';
+import 'package:food_delivery_app/features/cart/presentation/screens/checkout_screen.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -334,9 +336,12 @@ class CartScreen extends StatelessWidget {
 
   Widget _buildCheckoutButton(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        // TODO: Checkout
-      },
+    onTap: () {
+  Navigator.pushNamed(
+  context,
+  AppRoutes.checkout,
+);
+},
       child: Container(
         width: 160,
         height: 45,

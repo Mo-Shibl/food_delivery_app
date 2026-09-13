@@ -32,8 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      endDrawer: _activeDrawer == 'profile' 
-          ? const ProfileScreen(key: ValueKey('profile_drawer')) 
+      endDrawer: _activeDrawer == 'profile'
+          ? const ProfileScreen(key: ValueKey('profile_drawer'))
           : const CartScreen(key: ValueKey('cart_drawer')),
       drawerScrimColor: const Color(0x4FFE4A0C), // rgba(254, 74, 12, 0.31)
       backgroundColor: AppColors.yellowBase,
@@ -55,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Expanded(
                             child: Container(
                               height: 30,
+
                               padding: const EdgeInsets.symmetric(horizontal: 10),
                               decoration: BoxDecoration(
                                 color: AppColors.font2,
@@ -64,7 +65,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   Expanded(
                                     child: TextField(
-                                      textAlignVertical: TextAlignVertical.center,
+                                      onChanged: (value) {
+                                        context
+                                            .read<HomeCubit>()
+                                            .searchRestaurants(value);
+                                      },
+                                      textAlignVertical:
+                                          TextAlignVertical.center,
                                       style: const TextStyle(
                                         fontFamily: 'League Spartan',
                                         fontSize: 11,
@@ -75,7 +82,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                         hintStyle: TextStyle(
                                           fontFamily: 'League Spartan',
                                           fontSize: 11,
-                                          color: AppColors.font.withValues(alpha: 0.5),
+                                          color: AppColors.font.withValues(
+                                            alpha: 0.5,
+                                          ),
                                         ),
                                         isDense: true,
                                         contentPadding: EdgeInsets.zero,
@@ -116,11 +125,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                       setState(() {
                                         _activeDrawer = 'cart';
                                       });
-                                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                                        if (_scaffoldKey.currentState != null) {
-                                          _scaffoldKey.currentState!.openEndDrawer();
-                                        }
-                                      });
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) {
+                                            if (_scaffoldKey.currentState !=
+                                                null) {
+                                              _scaffoldKey.currentState!
+                                                  .openEndDrawer();
+                                            }
+                                          });
                                     },
                                   ),
                                   if (state.items.isNotEmpty)
@@ -218,31 +230,60 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: BlocBuilder<HomeCubit, HomeState>(
                         builder: (context, state) {
                           if (state is HomeLoading) {
-                            return const Center(child: CircularProgressIndicator(color: AppColors.orangeBase));
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: AppColors.orangeBase,
+                              ),
+                            );
                           }
                           if (state is HomeError) {
                             return Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(state.message, style: const TextStyle(fontFamily: 'League Spartan', fontSize: 14, color: Colors.red)),
+                                  Text(
+                                    state.message,
+                                    style: const TextStyle(
+                                      fontFamily: 'League Spartan',
+                                      fontSize: 14,
+                                      color: Colors.red,
+                                    ),
+                                  ),
                                   const SizedBox(height: 10),
                                   ElevatedButton(
-                                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.orangeBase),
-                                    onPressed: () => context.read<HomeCubit>().loadRestaurants(),
-                                    child: const Text('Retry', style: TextStyle(color: Colors.white)),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.orangeBase,
+                                    ),
+                                    onPressed: () => context
+                                        .read<HomeCubit>()
+                                        .loadRestaurants(),
+                                    child: const Text(
+                                      'Retry',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
                                   ),
                                 ],
                               ),
                             );
                           }
-                          final List<Restaurant> allRestaurants = state is HomeSuccess ? state.restaurants : [];
-                          final String? selectedCategory = state is HomeSuccess ? state.selectedCategory : null;
-                          final List<String> liveCategories = state is HomeSuccess ? state.categories : [];
+                          final List<Restaurant> allRestaurants =
+                              state is HomeSuccess ? state.restaurants : [];
+                          final String? selectedCategory = state is HomeSuccess
+                              ? state.selectedCategory
+                              : null;
+                          final List<String> liveCategories =
+                              state is HomeSuccess ? state.categories : [];
 
                           return SingleChildScrollView(
-                            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                            padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 25.0, bottom: 80.0),
+                            physics: const AlwaysScrollableScrollPhysics(
+                              parent: BouncingScrollPhysics(),
+                            ),
+                            padding: const EdgeInsets.only(
+                              left: 20.0,
+                              right: 20.0,
+                              top: 25.0,
+                              bottom: 80.0,
+                            ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -252,36 +293,67 @@ class _HomeScreenState extends State<HomeScreen> {
                                     scrollDirection: Axis.horizontal,
                                     physics: const BouncingScrollPhysics(),
                                     itemCount: liveCategories.length,
-                                    separatorBuilder: (context, index) => const SizedBox(width: 14),
+                                    separatorBuilder: (context, index) =>
+                                        const SizedBox(width: 14),
                                     itemBuilder: (context, index) {
                                       final category = liveCategories[index];
                                       return _buildCategoryItem(
                                         label: category,
                                         icon: _iconForCategory(category),
-                                        isSelected: selectedCategory == category,
-                                        onTap: () => _handleCategoryTap(context, category, selectedCategory),
+                                        isSelected:
+                                            selectedCategory == category,
+                                        onTap: () => _handleCategoryTap(
+                                          context,
+                                          category,
+                                          selectedCategory,
+                                        ),
                                       );
                                     },
                                   ),
                                 ),
                                 const SizedBox(height: 20),
-                                const Divider(color: Color(0xFFFFD8C7), thickness: 1, height: 1),
+                                const Divider(
+                                  color: Color(0xFFFFD8C7),
+                                  thickness: 1,
+                                  height: 1,
+                                ),
                                 const SizedBox(height: 14),
                                 Text(
                                   selectedCategory ?? 'All Restaurants',
-                                  style: const TextStyle(fontFamily: 'League Spartan', fontSize: 20, fontWeight: FontWeight.w500, height: 1.0, color: AppColors.font),
+                                  style: const TextStyle(
+                                    fontFamily: 'League Spartan',
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.0,
+                                    color: AppColors.font,
+                                  ),
                                 ),
                                 const SizedBox(height: 14),
                                 if (allRestaurants.isEmpty)
                                   const Padding(
                                     padding: EdgeInsets.symmetric(vertical: 40),
-                                    child: Center(child: Text('No restaurants available', style: TextStyle(fontFamily: 'League Spartan', fontSize: 12, color: AppColors.font))),
+                                    child: Center(
+                                      child: Text(
+                                        'No restaurants available',
+                                        style: TextStyle(
+                                          fontFamily: 'League Spartan',
+                                          fontSize: 12,
+                                          color: AppColors.font,
+                                        ),
+                                      ),
+                                    ),
                                   )
                                 else
-                                  ...allRestaurants.map((restaurant) => Padding(
-                                    padding: const EdgeInsets.only(bottom: 12),
-                                    child: RestaurantCard(restaurant: restaurant),
-                                  )),
+                                  ...allRestaurants.map(
+                                    (restaurant) => Padding(
+                                      padding: const EdgeInsets.only(
+                                        bottom: 12,
+                                      ),
+                                      child: RestaurantCard(
+                                        restaurant: restaurant,
+                                      ),
+                                    ),
+                                  ),
                               ],
                             ),
                           );
@@ -301,17 +373,60 @@ class _HomeScreenState extends State<HomeScreen> {
                 clipBehavior: Clip.antiAlias,
                 decoration: const BoxDecoration(
                   color: AppColors.orangeBase,
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(36), topRight: Radius.circular(36)),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(36),
+                    topRight: Radius.circular(36),
+                  ),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SvgPicture.asset('assets/icons/Home.svg', width: 25, height: 22, colorFilter: const ColorFilter.mode(AppColors.font2, BlendMode.srcIn)),
-                    SvgPicture.asset('assets/icons/Food.svg', width: 31, height: 21, colorFilter: const ColorFilter.mode(AppColors.font2, BlendMode.srcIn)),
-                    SvgPicture.asset('assets/icons/Fav.svg', width: 21, height: 18, colorFilter: const ColorFilter.mode(AppColors.font2, BlendMode.srcIn)),
-                    SvgPicture.asset('assets/icons/Menu.svg', width: 21, height: 18, colorFilter: const ColorFilter.mode(AppColors.font2, BlendMode.srcIn)),
-                    SvgPicture.asset('assets/icons/CustomerService.svg', width: 25, height: 24, colorFilter: const ColorFilter.mode(AppColors.font2, BlendMode.srcIn)),
+                    SvgPicture.asset(
+                      'assets/icons/Home.svg',
+                      width: 25,
+                      height: 22,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.font2,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    SvgPicture.asset(
+                      'assets/icons/Food.svg',
+                      width: 31,
+                      height: 21,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.font2,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    SvgPicture.asset(
+                      'assets/icons/Fav.svg',
+                      width: 21,
+                      height: 18,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.font2,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    SvgPicture.asset(
+                      'assets/icons/Menu.svg',
+                      width: 21,
+                      height: 18,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.font2,
+                        BlendMode.srcIn,
+                      ),
+                    ),
+                    SvgPicture.asset(
+                      'assets/icons/CustomerService.svg',
+                      width: 25,
+                      height: 24,
+                      colorFilter: const ColorFilter.mode(
+                        AppColors.font2,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -322,7 +437,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _handleCategoryTap(BuildContext context, String category, String? currentSelected) {
+  void _handleCategoryTap(
+    BuildContext context,
+    String category,
+    String? currentSelected,
+  ) {
     if (currentSelected == category) {
       context.read<HomeCubit>().loadRestaurants();
     } else {
@@ -332,28 +451,54 @@ class _HomeScreenState extends State<HomeScreen> {
 
   IconData _iconForCategory(String category) {
     final key = category.toLowerCase();
-    if (key.contains('biryani') || key.contains('rice')) return Icons.rice_bowl_outlined;
+    if (key.contains('biryani') || key.contains('rice'))
+      return Icons.rice_bowl_outlined;
     if (key.contains('seafood')) return Icons.set_meal_outlined;
-    if (key.contains('dessert') || key.contains('sweet')) return Icons.icecream_outlined;
-    if (key.contains('drink') || key.contains('brewery')) return Icons.local_drink_outlined;
+    if (key.contains('dessert') || key.contains('sweet'))
+      return Icons.icecream_outlined;
+    if (key.contains('drink') || key.contains('brewery'))
+      return Icons.local_drink_outlined;
     if (key.contains('vegan') || key.contains('veg')) return Icons.eco_outlined;
     if (key.contains('fine dining')) return Icons.dinner_dining_outlined;
     return Icons.restaurant_menu_outlined;
   }
 
-  Widget _buildHeaderIconBox({required String iconPath, required double iconWidth, required double iconHeight, VoidCallback? onTap}) {
+  Widget _buildHeaderIconBox({
+    required String iconPath,
+    required double iconWidth,
+    required double iconHeight,
+    VoidCallback? onTap,
+  }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: 26,
         height: 26,
-        decoration: BoxDecoration(color: AppColors.font2, borderRadius: BorderRadius.circular(10)),
-        child: Center(child: SvgPicture.asset(iconPath, width: iconWidth, height: iconHeight, colorFilter: const ColorFilter.mode(AppColors.orangeBase, BlendMode.srcIn))),
+        decoration: BoxDecoration(
+          color: AppColors.font2,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Center(
+          child: SvgPicture.asset(
+            iconPath,
+            width: iconWidth,
+            height: iconHeight,
+            colorFilter: const ColorFilter.mode(
+              AppColors.orangeBase,
+              BlendMode.srcIn,
+            ),
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildCategoryItem({required String label, required IconData icon, required bool isSelected, VoidCallback? onTap}) {
+  Widget _buildCategoryItem({
+    required String label,
+    required IconData icon,
+    required bool isSelected,
+    VoidCallback? onTap,
+  }) {
     final formattedLabel = label.replaceAll(' ', '\n');
     return GestureDetector(
       onTap: onTap,
@@ -364,11 +509,31 @@ class _HomeScreenState extends State<HomeScreen> {
             constraints: const BoxConstraints(minWidth: 49),
             height: 62,
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(color: isSelected ? AppColors.orangeBase : AppColors.yellow2, borderRadius: BorderRadius.circular(30)),
-            child: Center(child: Icon(icon, size: 24, color: isSelected ? AppColors.font2 : AppColors.orangeBase)),
+            decoration: BoxDecoration(
+              color: isSelected ? AppColors.orangeBase : AppColors.yellow2,
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: Center(
+              child: Icon(
+                icon,
+                size: 24,
+                color: isSelected ? AppColors.font2 : AppColors.orangeBase,
+              ),
+            ),
           ),
           const SizedBox(height: 4),
-          Text(formattedLabel, textAlign: TextAlign.center, softWrap: true, style: const TextStyle(fontFamily: 'League Spartan', fontSize: 12, fontWeight: FontWeight.w400, height: 1.1, color: AppColors.font)),
+          Text(
+            formattedLabel,
+            textAlign: TextAlign.center,
+            softWrap: true,
+            style: const TextStyle(
+              fontFamily: 'League Spartan',
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              height: 1.1,
+              color: AppColors.font,
+            ),
+          ),
         ],
       ),
     );

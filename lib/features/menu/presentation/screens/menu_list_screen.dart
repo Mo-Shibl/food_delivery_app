@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_delivery_app/core/widgets/loader.dart';
 
 import '../../../../core/di/injector.dart';
 import '../../../../core/routing/app_routes.dart';
@@ -13,10 +14,7 @@ import '../cubit/menu_state.dart';
 class MenuListScreen extends StatefulWidget {
   final int restaurantId;
 
-  const MenuListScreen({
-    super.key,
-    required this.restaurantId,
-  });
+  const MenuListScreen({super.key, required this.restaurantId});
 
   @override
   State<MenuListScreen> createState() => _MenuListScreenState();
@@ -24,13 +22,13 @@ class MenuListScreen extends StatefulWidget {
 
 class _MenuListScreenState extends State<MenuListScreen> {
   @override
-  void initState() {
-    super.initState();
+  // void initState() {
+  //   super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<MenuCubit>().getMenuForRestaurant(widget.restaurantId);
-    });
-  }
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     context.read<MenuCubit>().getMenuForRestaurant(widget.restaurantId);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -44,26 +42,14 @@ class _MenuListScreenState extends State<MenuListScreen> {
               icon: const Icon(Icons.sort),
               onSelected: (value) {
                 if (value == 'low') {
-                  context.read<MenuCubit>().sortByPrice(
-                        widget.restaurantId,
-                        true,
-                      );
+                  context.read<MenuCubit>().sortByPrice(true);
                 } else {
-                  context.read<MenuCubit>().sortByPrice(
-                        widget.restaurantId,
-                        false,
-                      );
+                  context.read<MenuCubit>().sortByPrice(false);
                 }
               },
               itemBuilder: (context) => const [
-                PopupMenuItem(
-                  value: 'low',
-                  child: Text('Price: Low to High'),
-                ),
-                PopupMenuItem(
-                  value: 'high',
-                  child: Text('Price: High to Low'),
-                ),
+                PopupMenuItem(value: 'low', child: Text('Price: Low to High')),
+                PopupMenuItem(value: 'high', child: Text('Price: High to Low')),
               ],
             ),
           ],
@@ -71,9 +57,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
         body: BlocBuilder<MenuCubit, MenuState>(
           builder: (context, state) {
             if (state.isLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: Loader());
             }
 
             if (state.error != null) {
@@ -83,21 +67,13 @@ class _MenuListScreenState extends State<MenuListScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
-                        Icons.error_outline,
-                        size: 50,
-                      ),
+                      const Icon(Icons.error_outline, size: 50),
                       const SizedBox(height: 12),
-                      Text(
-                        state.error!,
-                        textAlign: TextAlign.center,
-                      ),
+                      Text(state.error!, textAlign: TextAlign.center),
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: () {
-                          context
-                              .read<MenuCubit>()
-                              .getMenuForRestaurant(widget.restaurantId);
+                          context.read<MenuCubit>().getAllItems();
                         },
                         child: const Text('Try Again'),
                       ),
@@ -112,10 +88,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.restaurant_menu,
-                      size: 60,
-                    ),
+                    Icon(Icons.restaurant_menu, size: 60),
                     SizedBox(height: 12),
                     Text(
                       'No menu items available',
@@ -145,10 +118,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
     );
   }
 
-  Widget _buildMenuItem(
-    BuildContext context,
-    MenuItem item,
-  ) {
+  Widget _buildMenuItem(BuildContext context, MenuItem item) {
     return Card(
       elevation: 2,
       clipBehavior: Clip.antiAlias,
@@ -161,26 +131,21 @@ class _MenuListScreenState extends State<MenuListScreen> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: CachedNetworkImage(
-                imageUrl: item.imageUrl ?? '',
+                imageUrl: item.imageUrl ,
                 width: 100,
                 height: 100,
                 fit: BoxFit.cover,
-                placeholder: (_, __) => Container(
+                placeholder: (context, url) => SizedBox(
                   width: 100,
                   height: 100,
-                  color: Colors.grey.shade200,
-                  child: const Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                 // color: Colors.grey.shade200,
+                  child: const Center(child: Loader()),
                 ),
-                errorWidget: (_, __, ___) => Container(
+                errorWidget: (context, url, error) => SizedBox(
                   width: 100,
                   height: 100,
-                  color: Colors.grey.shade200,
-                  child: const Icon(
-                    Icons.fastfood,
-                    size: 35,
-                  ),
+                 // color: Colors.grey.shade200,
+                  child: const Icon(Icons.restaurant, size: 40),
                 ),
               ),
             ),
@@ -194,31 +159,33 @@ class _MenuListScreenState extends State<MenuListScreen> {
                 children: [
                   Text(
                     item.itemName,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.titleMedium,
+                    style: AppTextStyles.tituloScreen,
                   ),
 
                   const SizedBox(height: 6),
 
                   Text(
-                    item.itemDescription ?? '',
+                    item.itemDescription,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.bodyMedium,
                   ),
 
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
 
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         '${item.itemPrice} EGP',
-                        style: AppTextStyles.titleMedium,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
+                      const SizedBox(height: 8),
 
-                      ElevatedButton(
+                  SizedBox(
+                    height: 36,
+                       child: ElevatedButton(
                         onPressed: () {
                           Navigator.pushNamed(
                             context,
@@ -228,6 +195,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
                         },
                         child: const Text('Add'),
                       ),
+                  ),
                     ],
                   ),
                 ],

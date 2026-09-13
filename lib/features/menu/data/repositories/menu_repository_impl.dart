@@ -8,6 +8,7 @@ class MenuRepositoryImpl implements MenuRepository {
   final MenuRemoteService remoteService;
 
   MenuRepositoryImpl(this.remoteService);
+  
 
   @override
   Future<ApiResult<List<MenuItem>>> getAllItems() {
