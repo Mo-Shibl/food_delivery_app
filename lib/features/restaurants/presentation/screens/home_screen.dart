@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'profile_screen.dart';
+import 'package:food_delivery_app/core/routing/app_routes.dart';
 import 'package:food_delivery_app/features/cart/presentation/screens/cart_screen.dart';
 import 'package:food_delivery_app/features/cart/presentation/cubit/cart_cubit.dart';
 import 'package:food_delivery_app/features/cart/presentation/cubit/cart_state.dart';
@@ -32,8 +33,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      endDrawer: _activeDrawer == 'profile' 
-          ? const ProfileScreen(key: ValueKey('profile_drawer')) 
+      endDrawer: _activeDrawer == 'profile'
+          ? const ProfileScreen(key: ValueKey('profile_drawer'))
           : const CartScreen(key: ValueKey('cart_drawer')),
       drawerScrimColor: const Color(0x4FFE4A0C), // rgba(254, 74, 12, 0.31)
       backgroundColor: AppColors.yellowBase,
@@ -64,6 +65,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   Expanded(
                                     child: TextField(
+                                      readOnly: true,
+                                      onTap: () => Navigator.pushNamed(context, AppRoutes.search),
                                       textAlignVertical: TextAlignVertical.center,
                                       style: const TextStyle(
                                         fontFamily: 'League Spartan',
@@ -85,17 +88,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                   ),
-                                  Container(
-                                    width: 20,
-                                    height: 20,
-                                    decoration: const BoxDecoration(
-                                      color: AppColors.orangeBase,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Icon(
-                                      Icons.tune,
-                                      size: 12,
-                                      color: AppColors.font2,
+                                  GestureDetector(
+                                    onTap: () => Navigator.pushNamed(context, AppRoutes.search),
+                                    child: Container(
+                                      width: 20,
+                                      height: 20,
+                                      decoration: const BoxDecoration(
+                                        color: AppColors.orangeBase,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(
+                                        Icons.tune,
+                                        size: 12,
+                                        color: AppColors.font2,
+                                      ),
                                     ),
                                   ),
                                 ],

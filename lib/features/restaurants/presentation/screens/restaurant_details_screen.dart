@@ -132,9 +132,45 @@ class _RestaurantDetailsScreenState extends State<RestaurantDetailsScreen> {
                 const SizedBox(height: 24),
                 const Divider(),
                 const SizedBox(height: 16),
-                Text(
-                  'Menu',
-                  style: AppTextStyles.title.copyWith(fontSize: 22),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Menu',
+                      style: AppTextStyles.title.copyWith(fontSize: 22),
+                    ),
+                    BlocBuilder<RestaurantDetailsCubit, RestaurantDetailsState>(
+                      builder: (context, state) {
+                        if (state is RestaurantDetailsSuccess) {
+                          return PopupMenuButton<String>(
+                            icon: Icon(
+                              Icons.sort,
+                              color: state.sortByPrice != null
+                                  ? AppColors.orangeBase
+                                  : Colors.grey,
+                            ),
+                            onSelected: (value) {
+                              context.read<RestaurantDetailsCubit>().sortByPrice(
+                                    restaurant.restaurantID,
+                                    value,
+                                  );
+                            },
+                            itemBuilder: (context) => [
+                              const PopupMenuItem(
+                                value: 'asc',
+                                child: Text('Price: Low to High'),
+                              ),
+                              const PopupMenuItem(
+                                value: 'desc',
+                                child: Text('Price: High to Low'),
+                              ),
+                            ],
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16),
               ],

@@ -96,14 +96,18 @@ class ItemDetailsScreen extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          '${menuItem.itemPrice.toStringAsFixed(0)} EGP',
-                          style: AppTextStyles.title.copyWith(
-                            color: AppColors.orangeBase,
-                            fontSize: 32,
-                            fontWeight: FontWeight.w700,
+                        Expanded(
+                          child: Text(
+                            '${menuItem.itemPrice.toStringAsFixed(0)} EGP',
+                            style: AppTextStyles.title.copyWith(
+                              color: AppColors.orangeBase,
+                              fontSize: 32,
+                              fontWeight: FontWeight.w700,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        const SizedBox(width: 10),
                         _buildStepper(context),
                       ],
                     ),

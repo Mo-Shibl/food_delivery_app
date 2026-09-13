@@ -13,10 +13,10 @@ import '../../features/restaurants/presentation/screens/home_screen.dart'
     as restaurants;
 import '../../features/restaurants/presentation/screens/profile_screen.dart';
 import '../../features/restaurants/presentation/screens/restaurant_details_screen.dart';
+import '../../features/restaurants/presentation/screens/search_screen.dart';
 import '../../features/menu/domain/entities/menu_item.dart';
 import '../../features/menu/presentation/screens/item_details_screen.dart';
 import 'app_routes.dart';
-import '../../features/menu/presentation/search/menu_search_screen.dart';
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -54,9 +54,9 @@ class AppRouter {
         );
 
       case AppRoutes.search:
-  return MaterialPageRoute(
-    builder: (_) => const MenuSearchScreen(),
-  );
+        return MaterialPageRoute(
+          builder: (_) => const SearchScreen(),
+        );
 
       case AppRoutes.itemDetails:
         final menuItem = settings.arguments as MenuItem;
