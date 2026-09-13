@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:food_delivery_app/features/auth/presentation/screens/home_screen.dart';
 
 import 'package:food_delivery_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:food_delivery_app/features/auth/presentation/screens/sign_up_screen.dart';
 import 'package:food_delivery_app/features/auth/presentation/screens/splash_screen.dart';
+import 'package:food_delivery_app/features/cart/presentation/screens/cart_screen.dart';
+import 'package:food_delivery_app/features/cart/presentation/screens/checkout_screen.dart';
+import 'package:food_delivery_app/features/orders/presentation/cubit/orders_cubit.dart';
+import 'package:food_delivery_app/features/orders/presentation/screens/order_details_screen.dart';
+import 'package:food_delivery_app/features/orders/presentation/screens/orders_screen.dart';
 
 import '../../core/di/injector.dart';
 import '../../features/restaurants/presentation/cubit/home_cubit.dart';
@@ -22,27 +27,22 @@ class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case AppRoutes.splash:
-        return MaterialPageRoute(
-          builder: (_) => const SplashScreen(),
-        );
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
 
       case AppRoutes.login:
-        return MaterialPageRoute(
-          builder: (_) => const LoginScreen(),
-        );
+        return MaterialPageRoute(builder: (_) => const LoginScreen());
 
       case AppRoutes.signup:
-        return MaterialPageRoute(
-          builder: (_) => const SignUpScreen(),
-        );
+        return MaterialPageRoute(builder: (_) => const SignUpScreen());
 
       case AppRoutes.home:
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
-            create: (context) => getIt<HomeCubit>(),
+            create: (_) => getIt<HomeCubit>(),
             child: const restaurants.HomeScreen(),
           ),
         );
+
 
       case AppRoutes.restaurantDetails:
         final restaurantId = settings.arguments as int;
@@ -65,26 +65,37 @@ class AppRouter {
         );
 
       case AppRoutes.cart:
-        return _comingSoonRoute('Cart');
+        return MaterialPageRoute(builder: (_) => const CartScreen());
 
       case AppRoutes.checkout:
-        return _comingSoonRoute('Checkout');
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<OrdersCubit>(),
+            child: const CheckoutScreen(),
+          ),
+        );
 
       case AppRoutes.orders:
-        return _comingSoonRoute('Orders');
+        return MaterialPageRoute(builder: (_) => const OrdersScreen());
 
       case AppRoutes.orderDetails:
-        return _comingSoonRoute('Order Details');
+        final args = settings.arguments as Map<String, dynamic>;
+
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => getIt<OrdersCubit>(),
+            child: OrderDetailsScreen(
+              masterId: args['masterId'],
+              grandTotal: args['grandTotal'],
+            ),
+          ),
+        );
 
       case AppRoutes.profile:
-        return MaterialPageRoute(
-          builder: (_) => const ProfileScreen(),
-        );
+        return MaterialPageRoute(builder: (_) => const ProfileScreen());
 
       default:
-        return MaterialPageRoute(
-          builder: (_) => const LoginScreen(),
-        );
+        return MaterialPageRoute(builder: (_) => const LoginScreen());
     }
   }
 
@@ -93,10 +104,7 @@ class AppRouter {
       builder: (_) => Scaffold(
         appBar: AppBar(title: Text(screenName)),
         body: Center(
-          child: Text(
-            '$screenName\nComing soon',
-            textAlign: TextAlign.center,
-          ),
+          child: Text('$screenName\nComing soon', textAlign: TextAlign.center),
         ),
       ),
     );

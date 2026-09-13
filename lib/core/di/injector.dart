@@ -1,4 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:food_delivery_app/features/cart/presentation/cubit/cart_cubit.dart';
+import 'package:food_delivery_app/features/orders/data/repositories/orders_repository_impl.dart';
+import 'package:food_delivery_app/features/orders/data/services/orders_remote_service.dart';
+import 'package:food_delivery_app/features/orders/domain/repositories/orders_repository.dart';
+import 'package:food_delivery_app/features/orders/presentation/cubit/orders_cubit.dart';
 import 'package:get_it/get_it.dart';
 
 import '../networking/dio_factory.dart';

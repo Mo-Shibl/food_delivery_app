@@ -10,14 +10,26 @@ import '../../domain/entities/menu_item.dart';
 import '../cubit/menu_cubit.dart';
 import '../cubit/menu_state.dart';
 
-class MenuSearchScreen extends StatefulWidget {
+class MenuSearchScreen extends StatelessWidget {
   const MenuSearchScreen({super.key});
 
   @override
-  State<MenuSearchScreen> createState() => _MenuSearchScreenState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => getIt<MenuCubit>(),
+      child: const _MenuSearchView(),
+    );
+  }
 }
 
-class _MenuSearchScreenState extends State<MenuSearchScreen> {
+class _MenuSearchView extends StatefulWidget {
+  const _MenuSearchView();
+
+  @override
+  State<_MenuSearchView> createState() => _MenuSearchViewState();
+}
+
+class _MenuSearchViewState extends State<_MenuSearchView> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
@@ -38,101 +50,97 @@ class _MenuSearchScreenState extends State<MenuSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<MenuCubit>(),
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: const Text(
-            'Search',
-            style: TextStyle(
-              color: Colors.black,
-              fontWeight: FontWeight.bold,
-            ),
+        elevation: 0,
+        title: const Text(
+          'Search',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
           ),
         ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: TextField(
-                controller: _searchController,
-                textInputAction: TextInputAction.search,
-                onSubmitted: (_) => _search(),
-                decoration: InputDecoration(
-                  hintText: 'Search for a dish...',
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.arrow_forward),
-                    onPressed: _search,
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey.shade100,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15),
-                    borderSide: BorderSide.none,
-                  ),
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: TextField(
+              controller: _searchController,
+              textInputAction: TextInputAction.search,
+              onSubmitted: (_) => _search(),
+              decoration: InputDecoration(
+                hintText: 'Search for a dish...',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.arrow_forward),
+                  onPressed: _search,
+                ),
+                filled: true,
+                fillColor: Colors.grey.shade100,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                  borderSide: BorderSide.none,
                 ),
               ),
             ),
+          ),
+          Expanded(
+            child: BlocBuilder<MenuCubit, MenuState>(
+              builder: (context, state) {
+                if (state.isLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-            Expanded(
-              child: BlocBuilder<MenuCubit, MenuState>(
-                builder: (context, state) {
-                  if (state.isLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
+                if (state.error != null) {
+                  return Center(
+                    child: Text(
+                      state.error!,
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                }
 
-                  if (state.error != null) {
-                    return Center(
-                      child: Text(
-                        state.error!,
-                        textAlign: TextAlign.center,
-                      ),
-                    );
-                  }
-
-                  if (state.items.isEmpty) {
-                    return const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.search_off,
-                            size: 60,
+                if (state.items.isEmpty) {
+                  return const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.search_off,
+                          size: 60,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(height: 12),
+                        Text(
+                          'No dishes found',
+                          style: TextStyle(
+                            fontSize: 18,
                             color: Colors.grey,
                           ),
-                          SizedBox(height: 12),
-                          Text(
-                            'No dishes found',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-
-                  return ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    itemCount: state.items.length,
-                    itemBuilder: (context, index) {
-                      final item = state.items[index];
-
-                      return _buildDishItem(item);
-                    },
+                        ),
+                      ],
+                    ),
                   );
-                },
-              ),
+                }
+
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  itemCount: state.items.length,
+                  itemBuilder: (context, index) {
+                    final item = state.items[index];
+
+                    return _buildDishItem(item);
+                  },
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
