@@ -23,18 +23,5 @@ class ItemDetailsCubit extends Cubit<ItemDetailsState> {
     emit(state.copyWith(isFavorite: !state.isFavorite));
   }
 
-  void addToCart() {
-    if (state.item == null) return;
-    
-    // TODO: CartCubit.addItem(state.item!, state.quantity)
-    // For now, just simulating success
-    emit(state.copyWith(isAddedToCart: true));
-    
-    // Reset added state after a delay
-    Future.delayed(const Duration(seconds: 2), () {
-      if (!isClosed) {
-        emit(state.copyWith(isAddedToCart: false));
-      }
-    });
-  }
+  // addToCart logic moved to UI to interact with CartCubit directly
 }

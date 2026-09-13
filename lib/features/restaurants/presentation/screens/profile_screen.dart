@@ -17,6 +17,20 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  late final ProfileCubit _profileCubit;
+
+  @override
+  void initState() {
+    super.initState();
+    _profileCubit = getIt<ProfileCubit>()..loadProfile();
+  }
+
+  @override
+  void dispose() {
+    _profileCubit.close();
+    super.dispose();
+  }
+
   void _showTopNotification(BuildContext context, String message, {bool isError = true}) {
     final overlay = Overlay.of(context);
     late OverlayEntry overlayEntry;
@@ -76,8 +90,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<ProfileCubit>()..loadProfile(),
+    return BlocProvider.value(
+      value: _profileCubit,
       child: BlocConsumer<ProfileCubit, ProfileState>(
         listener: (context, state) {
           if (state is ProfileLoggedOut || state is DeleteAccountSuccess) {
