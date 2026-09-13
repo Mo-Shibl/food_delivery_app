@@ -161,23 +161,27 @@ class _MenuSearchViewState extends State<_MenuSearchView> {
             width: 70,
             height: 70,
             fit: BoxFit.cover,
-            placeholder: (context, url) => Container(
+            placeholder: (context, url) => const SizedBox(
               width: 70,
               height: 70,
-              color: AppColors.yellow2,
-              child: const Center(
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
+              child: ColoredBox(
+                color: AppColors.yellow2,
+                child: Center(
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                  ),
                 ),
               ),
             ),
-            errorWidget: (context, url, error) => Container(
+            errorWidget: (context, url, error) => const SizedBox(
               width: 70,
               height: 70,
-              color: AppColors.yellow2,
-              child: const Icon(
-                Icons.fastfood,
-                color: AppColors.orangeBase,
+              child: ColoredBox(
+                color: AppColors.yellow2,
+                child: Icon(
+                  Icons.fastfood,
+                  color: AppColors.orangeBase,
+                ),
               ),
             ),
           ),

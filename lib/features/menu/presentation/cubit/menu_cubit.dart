@@ -8,8 +8,7 @@ class MenuCubit extends Cubit<MenuState> {
   final MenuRepository repository;
 
   MenuCubit(this.repository) : super(const MenuState());
-  Future<void> getAllItems() async {
-    emit(state.copyWith(isLoading: true, error: null)); //1
+
 
   Future<void> getAllItems() async {
     emit(state.copyWith(isLoading: true, error: null));
