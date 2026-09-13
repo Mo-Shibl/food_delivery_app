@@ -5,6 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/di/injector.dart';
 import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_text_styles.dart';
+import '../../../../core/widgets/food_delivery_scaffold.dart';
 import '../../domain/entities/menu_item.dart';
 import '../cubit/item_details_cubit.dart';
 import '../cubit/item_details_state.dart';
@@ -23,8 +24,7 @@ class ItemDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => getIt<ItemDetailsCubit>()..setItem(menuItem),
-      child: Scaffold(
-        backgroundColor: AppColors.font2,
+      child: FoodDeliveryScaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -182,7 +182,7 @@ class ItemDetailsScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: 110),
                   ],
                 ),
               );

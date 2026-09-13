@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_delivery_app/features/auth/presentation/screens/home_screen.dart';
 
 import 'package:food_delivery_app/features/auth/presentation/screens/login_screen.dart';
 import 'package:food_delivery_app/features/auth/presentation/screens/sign_up_screen.dart';
@@ -97,16 +96,5 @@ class AppRouter {
       default:
         return MaterialPageRoute(builder: (_) => const LoginScreen());
     }
-  }
-
-  static MaterialPageRoute<dynamic> _comingSoonRoute(String screenName) {
-    return MaterialPageRoute(
-      builder: (_) => Scaffold(
-        appBar: AppBar(title: Text(screenName)),
-        body: Center(
-          child: Text('$screenName\nComing soon', textAlign: TextAlign.center),
-        ),
-      ),
-    );
   }
 }

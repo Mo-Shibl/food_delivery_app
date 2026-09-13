@@ -13,9 +13,7 @@ Future<ApiResult<T>> safeApiCall<T>(
     return ApiResult.failure(
       e.message ?? 'Network request failed',
     );
-  } catch (e , stackTrace) {
-      print('REAL ERROR: $e');
-    print('STACK TRACE: $stackTrace ');
+  } catch (_) {
     return ApiResult.failure(
       'Something went wrong',
     );
