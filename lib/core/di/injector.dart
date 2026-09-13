@@ -24,8 +24,6 @@ import '../../features/menu/data/services/menu_remote_service.dart';
 import '../../features/menu/domain/repositories/menu_repository.dart';
 import '../../features/menu/presentation/cubit/item_details_cubit.dart';
 
-import '../../features/cart/presentation/cubit/cart_cubit.dart';
-
 final getIt = GetIt.instance;
 
 void setupGetIt() {
@@ -105,10 +103,5 @@ void setupGetIt() {
   // Item Details Cubit
   getIt.registerFactory<ItemDetailsCubit>(
     () => ItemDetailsCubit(),
-  );
-
-  // Cart Cubit
-  getIt.registerLazySingleton<CartCubit>(
-    () => CartCubit(),
   );
 }
