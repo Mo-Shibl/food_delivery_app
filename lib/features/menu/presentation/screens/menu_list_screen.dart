@@ -21,18 +21,14 @@ class MenuListScreen extends StatefulWidget {
 
 class _MenuListScreenState extends State<MenuListScreen> {
   @override
-  // void initState() {
-  //   super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<MenuCubit>().getAllItems();
-    });
+  void initState() {
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<MenuCubit>(),
+      create: (_) => getIt<MenuCubit>()..getAllItems(),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Menu'),
@@ -134,17 +130,15 @@ class _MenuListScreenState extends State<MenuListScreen> {
                 width: 100,
                 height: 100,
                 fit: BoxFit.cover,
-                placeholder: (context, url) => Container(
+                placeholder: (context, url) => const SizedBox(
                   width: 100,
                   height: 100,
-                 // color: Colors.grey.shade200,
-                  child: const Center(child: Loader()),
+                  child: Center(child: Loader()),
                 ),
-                errorWidget: (context, url, error) => Container(
+                errorWidget: (context, url, error) => const SizedBox(
                   width: 100,
                   height: 100,
-                 // color: Colors.grey.shade200,
-                  child: const Icon(Icons.restaurant, size: 40),
+                  child: Icon(Icons.restaurant, size: 40),
                 ),
               ),
             ),
