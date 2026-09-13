@@ -23,7 +23,6 @@ import '../../features/menu/data/repositories/menu_repository_impl.dart';
 import '../../features/menu/data/services/menu_remote_service.dart';
 import '../../features/menu/domain/repositories/menu_repository.dart';
 import '../../features/menu/presentation/cubit/item_details_cubit.dart';
-import '../../features/menu/presentation/cubit/menu_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -105,10 +104,4 @@ void setupGetIt() {
   getIt.registerFactory<ItemDetailsCubit>(
     () => ItemDetailsCubit(),
   );
-  // Menu Cubit
-getIt.registerFactory<MenuCubit>(
-  () => MenuCubit(
-    getIt<MenuRepository>(),
-  ),
-);
 }
