@@ -10,12 +10,12 @@ class RestaurantDetailsCubit extends Cubit<RestaurantDetailsState> {
 
   RestaurantDetailsCubit(this.repository) : super(const RestaurantDetailsInitial());
 
-  Future<void> loadRestaurantDetails(int restaurantID) async {
+  Future<void> loadRestaurantDetails(int restaurantID, {String? sortByPrice}) async {
     emit(const RestaurantDetailsLoading());
 
     try {
       final restaurantResult = await repository.getRestaurantById(restaurantID);
-      final menuResult = await repository.getRestaurantMenu(restaurantID);
+      final menuResult = await repository.getRestaurantMenu(restaurantID, sortByPrice: sortByPrice);
 
       if (restaurantResult is ApiSuccess<Restaurant> &&
           menuResult is ApiSuccess<List<MenuItem>>) {
@@ -23,6 +23,7 @@ class RestaurantDetailsCubit extends Cubit<RestaurantDetailsState> {
           RestaurantDetailsSuccess(
             restaurant: restaurantResult.data,
             menu: menuResult.data,
+            sortByPrice: sortByPrice,
           ),
         );
       } else {
@@ -37,5 +38,12 @@ class RestaurantDetailsCubit extends Cubit<RestaurantDetailsState> {
     } catch (e) {
       emit(RestaurantDetailsError(e.toString()));
     }
+  }
+
+  Future<void> sortByPrice(int restaurantID, String direction) async {
+    // We could just call loadRestaurantDetails, but maybe we only want to reload the menu?
+    // The current implementation of loadRestaurantDetails reloads both. 
+    // Given the state structure, it's easier to just call it again with the parameter.
+    await loadRestaurantDetails(restaurantID, sortByPrice: direction);
   }
 }

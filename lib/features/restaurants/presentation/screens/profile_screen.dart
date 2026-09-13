@@ -117,7 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           }
 
           return Drawer(
-            width: 280,
+            width: 320,
             backgroundColor: Colors.transparent,
             elevation: 0,
             child: Container(

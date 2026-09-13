@@ -18,6 +18,7 @@ import '../../features/restaurants/data/services/restaurant_remote_service.dart'
 import '../../features/restaurants/domain/repositories/restaurant_repository.dart';
 import '../../features/restaurants/presentation/cubit/home_cubit.dart';
 import '../../features/restaurants/presentation/cubit/restaurant_details_cubit.dart';
+import '../../features/restaurants/presentation/cubit/search_cubit.dart';
 
 import '../../features/profile/data/repositories/profile_repository_impl.dart';
 import '../../features/profile/data/services/profile_remote_service.dart';
@@ -28,6 +29,8 @@ import '../../features/menu/data/repositories/menu_repository_impl.dart';
 import '../../features/menu/data/services/menu_remote_service.dart';
 import '../../features/menu/domain/repositories/menu_repository.dart';
 import '../../features/menu/presentation/cubit/item_details_cubit.dart';
+import '../../features/menu/presentation/cubit/menu_cubit.dart';
+import '../../features/cart/presentation/cubit/cart_cubit.dart';
 
 final getIt = GetIt.instance;
 
@@ -81,6 +84,14 @@ void setupGetIt() {
     ),
   );
 
+  // Search Cubit
+  getIt.registerFactory<SearchCubit>(
+    () => SearchCubit(
+      restaurantRepository: getIt<RestaurantRepository>(),
+      menuRepository: getIt<MenuRepository>(),
+    ),
+  );
+
   getIt.registerLazySingleton<ProfileRemoteService>(
         () => ProfileRemoteService(getIt<Dio>()),
   );
@@ -110,18 +121,13 @@ void setupGetIt() {
     () => ItemDetailsCubit(),
   );
 
-  getIt.registerFactory<CartCubit>(
-  () => CartCubit(),
-);
-getIt.registerLazySingleton<OrdersRemoteService>(
-  () => OrdersRemoteService(getIt<Dio>()),
-);
+  // Menu Cubit
+  getIt.registerFactory<MenuCubit>(
+    () => MenuCubit(getIt<MenuRepository>()),
+  );
 
-getIt.registerLazySingleton<OrdersRepository>(
-  () => OrdersRepositoryImpl(getIt<OrdersRemoteService>()),
-);
-
-getIt.registerFactory<OrdersCubit>(
-  () => OrdersCubit(getIt<OrdersRepository>()),
-);
+  // Cart Cubit
+  getIt.registerLazySingleton<CartCubit>(
+    () => CartCubit(),
+  );
 }

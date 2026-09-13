@@ -7,8 +7,6 @@ import 'package:food_delivery_app/core/themes/app_colors.dart';
 import 'package:food_delivery_app/features/cart/presentation/cubit/cart_cubit.dart';
 import 'package:food_delivery_app/features/cart/presentation/cubit/cart_state.dart';
 import 'package:food_delivery_app/features/cart/domain/entities/cart_line.dart';
-import 'package:food_delivery_app/core/widgets/primary_button.dart';
-import 'package:food_delivery_app/features/cart/presentation/screens/checkout_screen.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -240,14 +238,18 @@ class CartScreen extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              '${item.itemPrice.toStringAsFixed(2)} EGP',
-                              style: const TextStyle(
-                                fontFamily: 'League Spartan',
-                                fontSize: 14,
-                                color: AppColors.yellow2,
+                            Expanded(
+                              child: Text(
+                                '${item.itemPrice.toStringAsFixed(2)} EGP',
+                                style: const TextStyle(
+                                  fontFamily: 'League Spartan',
+                                  fontSize: 14,
+                                  color: AppColors.yellow2,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
+                            const SizedBox(width: 8),
                             _buildStepper(context, item),
                           ],
                         ),

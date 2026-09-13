@@ -5,7 +5,6 @@ import 'package:food_delivery_app/core/widgets/loader.dart';
 
 import '../../../../core/di/injector.dart';
 import '../../../../core/routing/app_routes.dart';
-import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_text_styles.dart';
 import '../../domain/entities/menu_item.dart';
 import '../cubit/menu_cubit.dart';
@@ -25,10 +24,10 @@ class _MenuListScreenState extends State<MenuListScreen> {
   // void initState() {
   //   super.initState();
 
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     context.read<MenuCubit>().getMenuForRestaurant(widget.restaurantId);
-  //   });
-  // }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<MenuCubit>().getAllItems();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -105,7 +104,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
             return ListView.separated(
               padding: const EdgeInsets.all(16),
               itemCount: state.items.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 16),
+              separatorBuilder: (context, index) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 final item = state.items[index];
 
@@ -131,17 +130,17 @@ class _MenuListScreenState extends State<MenuListScreen> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: CachedNetworkImage(
-                imageUrl: item.imageUrl ,
+                imageUrl: item.imageUrl,
                 width: 100,
                 height: 100,
                 fit: BoxFit.cover,
-                placeholder: (context, url) => SizedBox(
+                placeholder: (context, url) => Container(
                   width: 100,
                   height: 100,
                  // color: Colors.grey.shade200,
                   child: const Center(child: Loader()),
                 ),
-                errorWidget: (context, url, error) => SizedBox(
+                errorWidget: (context, url, error) => Container(
                   width: 100,
                   height: 100,
                  // color: Colors.grey.shade200,
@@ -159,7 +158,9 @@ class _MenuListScreenState extends State<MenuListScreen> {
                 children: [
                   Text(
                     item.itemName,
-                    style: AppTextStyles.tituloScreen,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.subtitulo,
                   ),
 
                   const SizedBox(height: 6),
@@ -168,6 +169,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
                     item.itemDescription,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.paragraph,
                   ),
 
                   const SizedBox(height: 8),
@@ -177,9 +179,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
                     children: [
                       Text(
                         '${item.itemPrice} EGP',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: AppTextStyles.subtitulo,
                       ),
                       const SizedBox(height: 8),
 
