@@ -16,15 +16,28 @@ class RestaurantDetailsLoading extends RestaurantDetailsState {
 class RestaurantDetailsSuccess extends RestaurantDetailsState {
   final Restaurant restaurant;
   final List<MenuItem> menu;
+  final String? sortByPrice;
 
   const RestaurantDetailsSuccess({
     required this.restaurant,
     required this.menu,
+    this.sortByPrice,
   });
+
+  RestaurantDetailsSuccess copyWith({
+    Restaurant? restaurant,
+    List<MenuItem>? menu,
+    String? sortByPrice,
+  }) {
+    return RestaurantDetailsSuccess(
+      restaurant: restaurant ?? this.restaurant,
+      menu: menu ?? this.menu,
+      sortByPrice: sortByPrice ?? this.sortByPrice,
+    );
+  }
 }
 
 class RestaurantDetailsError extends RestaurantDetailsState {
   final String message;
-
   const RestaurantDetailsError(this.message);
 }

@@ -137,7 +137,7 @@ class _MenuSearchScreenState extends State<MenuSearchScreen> {
     );
   }
 
- Widget _buildDishItem(MenuItem item)
+  Widget _buildDishItem(MenuItem item) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 2,
@@ -202,13 +202,13 @@ class _MenuSearchScreenState extends State<MenuSearchScreen> {
             ),
           ],
         ),
-       onTap: () {
-  Navigator.pushNamed(
-    context,
-    AppRoutes.restaurantDetails,
-    arguments: item.restaurantID,
-  );
-},
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            AppRoutes.restaurantDetails,
+            arguments: item.restaurantID,
+          );
+        },
       ),
     );
   }

@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injector.dart';
 import '../../../../core/routing/app_routes.dart';
-import '../../../../core/themes/app_colors.dart';
 import '../../../../core/themes/app_text_styles.dart';
 import '../../domain/entities/menu_item.dart';
 import '../cubit/menu_cubit.dart';
@@ -28,7 +27,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<MenuCubit>().getMenuForRestaurant(widget.restaurantId);
+      context.read<MenuCubit>().getAllItems();
     });
   }
 
@@ -44,15 +43,9 @@ class _MenuListScreenState extends State<MenuListScreen> {
               icon: const Icon(Icons.sort),
               onSelected: (value) {
                 if (value == 'low') {
-                  context.read<MenuCubit>().sortByPrice(
-                        widget.restaurantId,
-                        true,
-                      );
+                  context.read<MenuCubit>().sortByPrice(true);
                 } else {
-                  context.read<MenuCubit>().sortByPrice(
-                        widget.restaurantId,
-                        false,
-                      );
+                  context.read<MenuCubit>().sortByPrice(false);
                 }
               },
               itemBuilder: (context) => const [
@@ -95,9 +88,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: () {
-                          context
-                              .read<MenuCubit>()
-                              .getMenuForRestaurant(widget.restaurantId);
+                          context.read<MenuCubit>().getAllItems();
                         },
                         child: const Text('Try Again'),
                       ),
@@ -132,7 +123,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
             return ListView.separated(
               padding: const EdgeInsets.all(16),
               itemCount: state.items.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 16),
+              separatorBuilder: (context, index) => const SizedBox(height: 16),
               itemBuilder: (context, index) {
                 final item = state.items[index];
 
@@ -161,11 +152,11 @@ class _MenuListScreenState extends State<MenuListScreen> {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: CachedNetworkImage(
-                imageUrl: item.imageUrl ?? '',
+                imageUrl: item.imageUrl,
                 width: 100,
                 height: 100,
                 fit: BoxFit.cover,
-                placeholder: (_, __) => Container(
+                placeholder: (context, url) => Container(
                   width: 100,
                   height: 100,
                   color: Colors.grey.shade200,
@@ -173,7 +164,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
                     child: CircularProgressIndicator(),
                   ),
                 ),
-                errorWidget: (_, __, ___) => Container(
+                errorWidget: (context, url, error) => Container(
                   width: 100,
                   height: 100,
                   color: Colors.grey.shade200,
@@ -196,16 +187,16 @@ class _MenuListScreenState extends State<MenuListScreen> {
                     item.itemName,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.titleMedium,
+                    style: AppTextStyles.subtitulo,
                   ),
 
                   const SizedBox(height: 6),
 
                   Text(
-                    item.itemDescription ?? '',
+                    item.itemDescription,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.bodyMedium,
+                    style: AppTextStyles.paragraph,
                   ),
 
                   const SizedBox(height: 10),
@@ -215,7 +206,7 @@ class _MenuListScreenState extends State<MenuListScreen> {
                     children: [
                       Text(
                         '${item.itemPrice} EGP',
-                        style: AppTextStyles.titleMedium,
+                        style: AppTextStyles.subtitulo,
                       ),
 
                       ElevatedButton(
